@@ -21,11 +21,6 @@ date_default_timezone_set("Asia/Jakarta");
     <link rel="stylesheet" href="assets/css/bootstrap-chosen.css">
 
     <style>
-        body {
-            overflow-x: hidden;
-        }
-
-        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 0;
@@ -33,196 +28,99 @@ date_default_timezone_set("Asia/Jakarta");
             height: 100vh;
             width: 260px;
             background: linear-gradient(180deg, #007bff 0%, #0056b3 100%);
-            z-index: 1000;
-            overflow-y: auto;
-            transition: all 0.3s ease;
+            z-index: 1040;
         }
 
-        .sidebar::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
-        }
-
-        .sidebar-logo img {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-        }
-
-        .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-left-color: #fff;
-            padding-left: 1.5rem !important;
-        }
-
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-left-color: #ffc107;
-            font-weight: 600;
-        }
-
-        .nav-link i {
-            width: 25px;
-        }
-
-        /* Top Navbar */
-        .top-navbar {
-            margin-left: 260px;
-            z-index: 999;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-toggler-custom {
-            display: none;
-            background: transparent;
-            border: none;
-            font-size: 1.5rem;
-            color: #333;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .navbar-toggler-custom:hover {
-            color: #007bff;
-        }
-
-        /* Main Content */
         .main-content {
             margin-left: 260px;
-            margin-top: 80px;
-            min-height: calc(100vh - 80px);
-            transition: all 0.3s ease;
-            padding: 20px;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
         }
 
-        /* Overlay untuk mobile */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+        .top-navbar {
+            margin-left: 260px;
+            height: 70px;
         }
 
-        .sidebar-overlay.show {
-            display: block;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 991.98px) {
             .sidebar {
-                margin-left: -260px;
+                transform: translateX(-100%);
+                transition: transform 0.3s;
             }
 
             .sidebar.show {
-                margin-left: 0;
-                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+                transform: translateX(0);
             }
 
+            .main-content,
             .top-navbar {
                 margin-left: 0;
             }
 
-            .main-content {
-                margin-left: 0;
-            }
-
-            .navbar-toggler-custom {
-                display: inline-block;
-            }
-
-            /* Sembunyikan user info di mobile jika ada */
-            .user-info-desktop {
+            .sidebar-overlay {
                 display: none;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .top-navbar h4 {
-                font-size: 1.2rem;
-            }
-
-            .btn-danger {
-                padding: 0.375rem 0.75rem;
-                font-size: 0.875rem;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1035;
             }
 
-            .btn-danger span {
-                display: none;
+            .sidebar-overlay.show {
+                display: block;
             }
-
-            .main-content {
-                padding: 15px;
-            }
-        }
-
-        /* Animasi smooth */
-        * {
-            -webkit-transition: margin-left 0.3s ease;
-            -moz-transition: margin-left 0.3s ease;
-            -o-transition: margin-left 0.3s ease;
-            transition: margin-left 0.3s ease;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-light">
 
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Sidebar -->
-    <div class="sidebar shadow" id="sidebar">
+    <div class="sidebar shadow-lg overflow-auto" id="sidebar">
         <!-- Logo -->
-        <div class="text-center py-4 border-bottom border-light">
-            <!-- <img src="assets/img/logo.png" alt="Logo" class="rounded-circle bg-white p-2 mb-2" onerror="this.src='https://via.placeholder.com/70/007bff/ffffff?text=SPK'"> -->
-            <h5 class="text-white mb-1">SPK Film Impor</h5>
+        <div class="text-center py-4 border-bottom border-white">
+            <div class="bg-white rounded-circle d-inline-block p-2 mb-2">
+                <i class="fas fa-film text-primary" style="font-size: 2rem;"></i>
+            </div>
+            <h5 class="text-white mb-1 font-weight-bold">SPK Film Impor</h5>
             <small class="text-white-50">Sistem Pendukung Keputusan</small>
         </div>
 
         <!-- Menu -->
         <ul class="nav flex-column py-3">
             <li class="nav-item">
-                <a class="nav-link active" href="index.php">
-                    <i class="fas fa-home"></i> Dashboard
+                <a class="nav-link text-white px-4 py-3" href="index.php">
+                    <i class="fas fa-home mr-3"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="?page=alternatif">
-                    <i class="fas fa-film"></i> Data Alternatif
+                <a class="nav-link text-white px-4 py-3" href="?page=alternatif">
+                    <i class="fas fa-film mr-3"></i> Data Alternatif
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="?page=kriteria">
-                    <i class="fas fa-list"></i> Data Kriteria
+                <a class="nav-link text-white px-4 py-3" href="?page=kriteria">
+                    <i class="fas fa-list mr-3"></i> Data Kriteria
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="?page=subkriteria">
-                    <i class="fas fa-layer-group"></i> Data Sub-Kriteria
+                <a class="nav-link text-white px-4 py-3" href="?page=subkriteria">
+                    <i class="fas fa-layer-group mr-3"></i> Data Sub-Kriteria
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="?page=normalisasi">
-                    <i class="fas fa-calculator"></i> Normalisasi Data
+                <a class="nav-link text-white px-4 py-3" href="?page=normalisasi">
+                    <i class="fas fa-calculator mr-3"></i> Normalisasi Data
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="?page=perhitungan">
-                    <i class="fas fa-chart-line"></i> Perhitungan SAW
+                <a class="nav-link text-white px-4 py-3" href="?page=perhitungan">
+                    <i class="fas fa-chart-line mr-3"></i> Perhitungan SAW
                 </a>
             </li>
         </ul>
@@ -231,13 +129,15 @@ date_default_timezone_set("Asia/Jakarta");
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top top-navbar">
         <div class="container-fluid">
+            <!-- Left Side -->
             <div class="d-flex align-items-center">
                 <!-- Toggle Button untuk Mobile -->
-                <button class="navbar-toggler-custom" id="sidebarToggle" type="button">
-                    <i class="fas fa-bars"></i>
+                <button class="btn btn-link text-dark d-lg-none mr-2" id="sidebarToggle" type="button">
+                    <i class="fas fa-bars fa-lg"></i>
                 </button>
 
-                <h4 class="mb-0 font-weight-bold text-dark ml-2">
+                <!-- Page Title -->
+                <h4 class="mb-0 font-weight-bold text-dark">
                     <?php
                     $page = isset($_GET['page']) ? $_GET['page'] : "";
                     $titles = [
@@ -253,15 +153,17 @@ date_default_timezone_set("Asia/Jakarta");
                 </h4>
             </div>
 
+            <!-- Right Side -->
             <div class="d-flex align-items-center">
-                <!-- User Info (Uncomment setelah login selesai) -->
-                <!-- <div class="bg-light rounded-pill px-3 py-2 mr-3 user-info-desktop">
+                <!-- User Info -->
+                <!-- <div class="bg-light rounded-pill px-3 py-2 mr-3 d-none d-md-inline-block">
                     <i class="fas fa-user-circle text-primary"></i>
                     <span class="ml-2 font-weight-medium"><?php // echo $nama_user; 
                                                             ?></span>
                 </div> -->
 
-                <a href="logout.php" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin logout?')">
+                <!-- Logout Button -->
+                <a href="logout.php" class="btn btn-danger btn-sm rounded-pill" onclick="return confirm('Apakah Anda yakin ingin logout?')">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="d-none d-md-inline ml-1">Logout</span>
                 </a>
@@ -270,7 +172,7 @@ date_default_timezone_set("Asia/Jakarta");
     </nav>
 
     <!-- Main Content -->
-    <div class="main-content">
+    <div class="main-content p-4">
         <div class="container-fluid">
             <?php
             // pengaturan menu
@@ -322,17 +224,48 @@ date_default_timezone_set("Asia/Jakarta");
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="assets/js/jquery-3.7.0.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/all.js"></script>
     <script src="assets/js/datatables.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            // DataTables
             $('#myTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
                 },
                 "responsive": true
+            });
+
+            // Active menu
+            var currentPage = "<?php echo $page; ?>";
+            $('.sidebar .nav-link').removeClass('active bg-white text-primary');
+
+            if (currentPage === "") {
+                $('.sidebar .nav-link[href="index.php"]').addClass('active bg-white text-primary');
+            } else {
+                $('.sidebar .nav-link[href="?page=' + currentPage + '"]').addClass('active bg-white text-primary');
+            }
+
+            // Sidebar toggle
+            $('#sidebarToggle').on('click', function() {
+                $('#sidebar').toggleClass('show');
+                $('#sidebarOverlay').toggleClass('show');
+            });
+
+            $('#sidebarOverlay').on('click', function() {
+                $('#sidebar').removeClass('show');
+                $('#sidebarOverlay').removeClass('show');
+            });
+
+            $('.sidebar .nav-link').on('click', function() {
+                if ($(window).width() <= 991) {
+                    $('#sidebar').removeClass('show');
+                    $('#sidebarOverlay').removeClass('show');
+                }
             });
         });
     </script>
@@ -341,50 +274,6 @@ date_default_timezone_set("Asia/Jakarta");
     <script>
         $(function() {
             $('.chosen').chosen();
-        });
-    </script>
-
-    <script>
-        // Active menu highlighting
-        $(document).ready(function() {
-            var currentPage = "<?php echo $page; ?>";
-            $('.nav-link').removeClass('active');
-
-            if (currentPage === "") {
-                $('.nav-link[href="index.php"]').addClass('active');
-            } else {
-                $('.nav-link[href="?page=' + currentPage + '"]').addClass('active');
-            }
-        });
-
-        // Toggle Sidebar untuk Mobile
-        $(document).ready(function() {
-            $('#sidebarToggle').on('click', function() {
-                $('#sidebar').toggleClass('show');
-                $('#sidebarOverlay').toggleClass('show');
-            });
-
-            // Close sidebar ketika overlay diklik
-            $('#sidebarOverlay').on('click', function() {
-                $('#sidebar').removeClass('show');
-                $('#sidebarOverlay').removeClass('show');
-            });
-
-            // Close sidebar ketika menu diklik (khusus mobile)
-            $('.nav-link').on('click', function() {
-                if ($(window).width() <= 768) {
-                    $('#sidebar').removeClass('show');
-                    $('#sidebarOverlay').removeClass('show');
-                }
-            });
-
-            // Handle resize window
-            $(window).on('resize', function() {
-                if ($(window).width() > 768) {
-                    $('#sidebar').removeClass('show');
-                    $('#sidebarOverlay').removeClass('show');
-                }
-            });
         });
     </script>
 
