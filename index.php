@@ -1,6 +1,6 @@
 <?php
 date_default_timezone_set("Asia/Jakarta");
-// require "config.php";
+require_once "config.php";
 
 // session_start();
 // $nama_user = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : 'Guest';
@@ -233,7 +233,7 @@ date_default_timezone_set("Asia/Jakarta");
     <script>
         $(document).ready(function() {
             // DataTables
-            $('#myTable').DataTable({
+            $('#table').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
                 },

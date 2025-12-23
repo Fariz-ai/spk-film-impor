@@ -1,82 +1,81 @@
 <?php
-// require "config.php";
 
-// // Query untuk menghitung total alternatif
-// $query_alternatif = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM alternatif");
-// $total_alternatif = mysqli_fetch_assoc($query_alternatif)['total'];
+// Query untuk menghitung total alternatif
+$query_alternatif = mysqli_query($conn, "SELECT COUNT(*) as total FROM alternatif");
+$total_alternatif = mysqli_fetch_assoc($query_alternatif)['total'];
 
-// // Query untuk menghitung total kriteria
-// $query_kriteria = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM kriteria");
-// $total_kriteria = mysqli_fetch_assoc($query_kriteria)['total'];
+// Query untuk menghitung total kriteria
+$query_kriteria = mysqli_query($conn, "SELECT COUNT(*) as total FROM kriteria");
+$total_kriteria = mysqli_fetch_assoc($query_kriteria)['total'];
 
-// // Query untuk menghitung total sub-kriteria
-// $query_subkriteria = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM sub_kriteria");
-// $total_subkriteria = mysqli_fetch_assoc($query_subkriteria)['total'];
+// Query untuk menghitung total sub-kriteria
+$query_subkriteria = mysqli_query($conn, "SELECT COUNT(*) as total FROM sub_kriteria");
+$total_subkriteria = mysqli_fetch_assoc($query_subkriteria)['total'];
 
-// // Query untuk menghitung total penilaian
-// $query_penilaian = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM penilaian");
-// $total_penilaian = mysqli_fetch_assoc($query_penilaian)['total'];
+// Query untuk menghitung total penilaian
+$query_penilaian = mysqli_query($conn, "SELECT COUNT(*) as total FROM penilaian");
+$total_penilaian = mysqli_fetch_assoc($query_penilaian)['total'];
 
-// // Query untuk mendapatkan hasil perhitungan SAW
-// $query_hasil = "
-// SELECT
-// a.id,
-// a.kode_alternatif,
-// a.judul_film,
-// a.genre,
-// a.perusahaan_produksi,
-// SUM(
-// (sk.nilai /
-// CASE
-// WHEN k.jenis = 'benefit' THEN (
-// SELECT MAX(sk2.nilai)
-// FROM penilaian p2
-// JOIN sub_kriteria sk2 ON p2.sub_kriteria_id = sk2.id
-// WHERE sk2.kriteria_id = k.id
-// )
-// ELSE (
-// SELECT MIN(sk2.nilai)
-// FROM penilaian p2
-// JOIN sub_kriteria sk2 ON p2.sub_kriteria_id = sk2.id
-// WHERE sk2.kriteria_id = k.id
-// )
-// END
-// ) * k.bobot
-// ) as nilai_preferensi
-// FROM alternatif a
-// LEFT JOIN penilaian p ON a.id = p.alternatif_id
-// LEFT JOIN kriteria k ON p.kriteria_id = k.id
-// LEFT JOIN sub_kriteria sk ON p.sub_kriteria_id = sk.id
-// GROUP BY a.id, a.kode_alternatif, a.judul_film, a.genre, a.perusahaan_produksi
-// HAVING nilai_preferensi IS NOT NULL
-// ORDER BY nilai_preferensi DESC
-// ";
+// Query untuk mendapatkan hasil perhitungan SAW
+$query_hasil = "
+SELECT
+a.id,
+a.kode_alternatif,
+a.judul_film,
+a.genre,
+a.perusahaan_produksi,
+SUM(
+(sk.nilai /
+CASE
+WHEN k.jenis = 'benefit' THEN (
+SELECT MAX(sk2.nilai)
+FROM penilaian p2
+JOIN sub_kriteria sk2 ON p2.sub_kriteria_id = sk2.id
+WHERE sk2.kriteria_id = k.id
+)
+ELSE (
+SELECT MIN(sk2.nilai)
+FROM penilaian p2
+JOIN sub_kriteria sk2 ON p2.sub_kriteria_id = sk2.id
+WHERE sk2.kriteria_id = k.id
+)
+END
+) * k.bobot
+) as nilai_preferensi
+FROM alternatif a
+LEFT JOIN penilaian p ON a.id = p.alternatif_id
+LEFT JOIN kriteria k ON p.kriteria_id = k.id
+LEFT JOIN sub_kriteria sk ON p.sub_kriteria_id = sk.id
+GROUP BY a.id, a.kode_alternatif, a.judul_film, a.genre, a.perusahaan_produksi
+HAVING nilai_preferensi IS NOT NULL
+ORDER BY nilai_preferensi DESC
+";
 
-// $hasil = mysqli_query($koneksi, $query_hasil);
-// $data_hasil = [];
-// $rank = 1;
+$hasil = mysqli_query($conn, $query_hasil);
+$data_hasil = [];
+$rank = 1;
 
-// while ($row = mysqli_fetch_assoc($hasil)) {
-//     $row['rank'] = $rank++;
-//     $data_hasil[] = $row;
-// }
+while ($row = mysqli_fetch_assoc($hasil)) {
+    $row['rank'] = $rank++;
+    $data_hasil[] = $row;
+}
 
-// // Film dengan skor tertinggi
-// $film_terbaik = !empty($data_hasil) ? $data_hasil[0] : null;
+// Film dengan skor tertinggi
+$film_terbaik = !empty($data_hasil) ? $data_hasil[0] : null;
 ?>
 
 <!-- Dashboard Content -->
 <div class="row mb-4">
     <!-- Card Statistik -->
-    <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-primary shadow-sm">
+    <div class="col-xl-4 col-md-4 mb-3">
+        <div class="card border-primary shadow-sm h-100">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col">
                         <div class="text-uppercase text-primary font-weight-bold small mb-1">
                             Total Alternatif
                         </div>
-                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo "total alternatif" ?></div>
+                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo $total_alternatif ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-film fa-2x text-muted"></i>
@@ -86,15 +85,15 @@
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-success shadow-sm">
+    <div class="col-xl-4 col-md-4 mb-3">
+        <div class="card border-success shadow-sm h-100">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col">
                         <div class="text-uppercase text-success font-weight-bold small mb-1">
                             Total Kriteria
                         </div>
-                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo "total kriteria" ?></div>
+                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo $total_kriteria ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-list fa-2x text-muted"></i>
@@ -104,15 +103,15 @@
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-info shadow-sm">
+    <div class="col-xl-4 col-md-4 mb-3">
+        <div class="card border-info shadow-sm h-100">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col">
                         <div class="text-uppercase text-info font-weight-bold small mb-1">
                             Total Sub-Kriteria
                         </div>
-                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo "total sub kriteria" ?></div>
+                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo $total_subkriteria ?></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-layer-group fa-2x text-muted"></i>
@@ -121,6 +120,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Film Terbaik -->
@@ -258,6 +258,10 @@
         </div>
     </div>
 </div>
+
+<?php
+$conn->close();
+?>
 
 <script>
     $(document).ready(function() {
