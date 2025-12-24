@@ -139,7 +139,8 @@ require_once "config.php";
                 <!-- Page Title -->
                 <h4 class="mb-0 font-weight-bold text-dark">
                     <?php
-                    $page = isset($_GET['page']) ? $_GET['page'] : "";
+                    $page = $_GET['page'] ?? "";
+
                     $titles = [
                         "" => "Dashboard",
                         "alternatif" => "Data Alternatif",
@@ -147,8 +148,14 @@ require_once "config.php";
                         "subkriteria" => "Data Sub-Kriteria",
                         "normalisasi" => "Normalisasi Data",
                         "perhitungan" => "Perhitungan SAW",
+                        "hasil" => "Hasil Perhitungan",
                     ];
-                    echo isset($titles[$page]) ? $titles[$page] : "Dashboard";
+
+                    if (array_key_exists($page, $titles)) {
+                        echo $titles[$page];
+                    } else {
+                        echo "Halaman Tidak Ditemukan";
+                    }
                     ?>
                 </h4>
             </div>
@@ -218,7 +225,7 @@ require_once "config.php";
             } elseif ($page == "hasil") {
                 include "hasil/index.php";
             } else {
-                include "welcome.php";
+                include "notFound.php";
             }
             ?>
         </div>
