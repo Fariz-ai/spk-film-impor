@@ -17,7 +17,9 @@ if (isset($_POST['simpan'])) {
         $sql = "INSERT INTO alternatif (kode_alternatif, judul_film, genre, perusahaan_produksi) 
         VALUES ('$kodeAlternatif', '$judulFilm', '$genre', '$perusahaanProduksi')";
         if ($conn->query($sql) === TRUE) {
-            header("Location:?page=alternatif");
+            echo "<script>
+            window.location.href='?page=alternatif';
+          </script>";
             exit();
         } else {
             $error = "Gagal Menyimpan! Terjadi kesalahan: " . $conn->error;
