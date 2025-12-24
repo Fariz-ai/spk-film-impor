@@ -4,7 +4,6 @@ $error = '';
 if (isset($_POST['simpan'])) {
     $kodeAlternatif = $_POST["kode_alternatif"];
     $judulFilm = $_POST["judul_film"];
-    $genre = $_POST["genre"];
     $perusahaanProduksi = $_POST["perusahaan_produksi"];
 
     // Validasi
@@ -14,10 +13,12 @@ if (isset($_POST['simpan'])) {
         $error = "Validasi Gagal! Data tersebut telah terdaftar.";
     } else {
         // Proses simpan
-        $sql = "INSERT INTO alternatif (kode_alternatif, judul_film, genre, perusahaan_produksi) 
-        VALUES ('$kodeAlternatif', '$judulFilm', '$genre', '$perusahaanProduksi')";
+        $sql = "INSERT INTO alternatif (kode_alternatif, judul_film, perusahaan_produksi) 
+        VALUES ('$kodeAlternatif', '$judulFilm', '$perusahaanProduksi')";
         if ($conn->query($sql) === TRUE) {
-            header("Location:?page=alternatif");
+            echo "<script>
+            window.location.href='?page=alternatif';
+          </script>";
             exit();
         } else {
             $error = "Gagal Menyimpan! Terjadi kesalahan: " . $conn->error;
@@ -43,19 +44,15 @@ if (isset($_POST['simpan'])) {
                     <div class="card-header bg-primary text-white border-dark"><Strong>Tambah Data Alternatif</Strong></div>
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="">Kode Alternatif</label>
+                            <label>Kode Alternatif</label>
                             <input type="text" class="form-control" name="kode_alternatif" maxlength="10" required>
                         </div>
                         <div class="form-group">
-                            <label for="">Judul Film</label>
+                            <label>Judul Film</label>
                             <input type="text" class="form-control" name="judul_film" maxlength="255" required>
                         </div>
                         <div class="form-group">
-                            <label for="">Genre</label>
-                            <input type="text" class="form-control" name="genre" maxlength="100" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Perusahaan Produksi</label>
+                            <label>Perusahaan Produksi</label>
                             <input type="text" class="form-control" name="perusahaan_produksi" maxlength="255" required>
                         </div>
                         <input type="submit" value="Simpan" name="simpan" class="btn btn-primary">
