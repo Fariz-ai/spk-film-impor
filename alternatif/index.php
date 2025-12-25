@@ -15,7 +15,7 @@
             <tbody>
                 <?php
                 $no = 1;
-                $sql = "SELECT * FROM alternatif ORDER BY kode_alternatif ASC";
+                $sql = "SELECT * FROM alternatif ORDER BY dibuat_pada DESC";
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                 ?>
