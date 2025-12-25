@@ -22,7 +22,6 @@ SELECT
 a.id,
 a.kode_alternatif,
 a.judul_film,
-a.genre,
 a.perusahaan_produksi,
 SUM(
 (sk.nilai /
@@ -46,7 +45,7 @@ FROM alternatif a
 LEFT JOIN penilaian p ON a.id = p.alternatif_id
 LEFT JOIN kriteria k ON p.kriteria_id = k.id
 LEFT JOIN sub_kriteria sk ON p.sub_kriteria_id = sk.id
-GROUP BY a.id, a.kode_alternatif, a.judul_film, a.genre, a.perusahaan_produksi
+GROUP BY a.id, a.kode_alternatif, a.judul_film, a.perusahaan_produksi
 HAVING nilai_preferensi IS NOT NULL
 ORDER BY nilai_preferensi DESC
 ";
