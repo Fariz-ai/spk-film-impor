@@ -17,38 +17,7 @@ $query_penilaian = mysqli_query($conn, "SELECT COUNT(*) as total FROM penilaian"
 $total_penilaian = mysqli_fetch_assoc($query_penilaian)['total'];
 
 // Query untuk mendapatkan hasil perhitungan SAW
-$query_hasil = "
-SELECT
-a.id,
-a.kode_alternatif,
-a.judul_film,
-a.periode_rilis
-SUM(
-(sk.nilai /
-CASE
-WHEN k.jenis = 'benefit' THEN (
-SELECT MAX(sk2.nilai)
-FROM penilaian p2
-JOIN sub_kriteria sk2 ON p2.sub_kriteria_id = sk2.id
-WHERE sk2.kriteria_id = k.id
-)
-ELSE (
-SELECT MIN(sk2.nilai)
-FROM penilaian p2
-JOIN sub_kriteria sk2 ON p2.sub_kriteria_id = sk2.id
-WHERE sk2.kriteria_id = k.id
-)
-END
-) * k.bobot
-) as nilai_preferensi
-FROM alternatif a
-LEFT JOIN penilaian p ON a.id = p.alternatif_id
-LEFT JOIN kriteria k ON p.kriteria_id = k.id
-LEFT JOIN sub_kriteria sk ON p.sub_kriteria_id = sk.id
-GROUP BY a.id, a.kode_alternatif, a.judul_film, a.periode_rilis
-HAVING nilai_preferensi IS NOT NULL
-ORDER BY nilai_preferensi DESC
-";
+$query_hasil = "SELECT * FROM penilaian";
 
 $hasil = mysqli_query($conn, $query_hasil);
 $data_hasil = [];

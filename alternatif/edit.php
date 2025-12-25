@@ -52,7 +52,7 @@ $row = $result->fetch_assoc();
                         </div>
                         <div class="form-group">
                             <label>Periode Rilis</label>
-                            <input type="text" name="periode_rilis" value="<?php echo $row['periode_rilis'] ?>" maxlength="255" class="form-control" required>
+                            <input type="date" name="periode_rilis" value="<?php echo $row['periode_rilis'] ?>" maxlength="255" class="form-control" required>
                         </div>
                         <input type="submit" value="Simpan" name="edit" class="btn btn-primary">
                         <a href="?page=alternatif" class="btn btn-danger">Batal</a>
