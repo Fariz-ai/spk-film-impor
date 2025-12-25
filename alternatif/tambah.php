@@ -53,7 +53,7 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="form-group">
                             <label>Periode Rilis</label>
-                            <input type="text" class="form-control" name="periode_rilis" maxlength="255" required>
+                            <input type="date" class="form-control" name="periode_rilis" required>
                         </div>
                         <input type="submit" value="Simpan" name="simpan" class="btn btn-primary">
                         <a href="?page=alternatif" class="btn btn-danger">Batal</a>

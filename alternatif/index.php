@@ -15,7 +15,7 @@
             <tbody>
                 <?php
                 $no = 1;
-                $sql = "SELECT * FROM alternatif ORDER BY kode_alternatif ASC";
+                $sql = "SELECT * FROM alternatif ORDER BY dibuat_pada DESC";
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                 ?>
@@ -23,7 +23,28 @@
                         <td align="center"><?php echo $no++; ?></td>
                         <td align="center"><?php echo $row["kode_alternatif"]; ?></td>
                         <td align="center"><?php echo $row["judul_film"]; ?></td>
-                        <td align="center"><?php echo $row["periode_rilis"]; ?></td>
+                        <td align="center">
+                            <?php
+                            $bulan = [
+                                1 => 'Januari',
+                                'Februari',
+                                'Maret',
+                                'April',
+                                'Mai',
+                                'Juni',
+                                'Juli',
+                                'Agustus',
+                                'September',
+                                'Oktober',
+                                'November',
+                                'Desember'
+                            ];
+                            $tanggal = date('d', strtotime($row["periode_rilis"]));
+                            $bulanAngka = date('n', strtotime($row["periode_rilis"]));
+                            $tahun = date('Y', strtotime($row["periode_rilis"]));
+                            echo "$tanggal {$bulan[$bulanAngka]} $tahun";
+                            ?>
+                        </td>
                         <td align="center">
                             <a class="btn btn-warning" href="?page=alternatif&action=edit&id=<?php echo $row['id']; ?>">
                                 Edit
