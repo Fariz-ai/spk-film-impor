@@ -2,10 +2,10 @@
 if (isset($_POST['edit'])) {
     $kodeAlternatif = $_POST['kode_alternatif'];
     $judulFilm = $_POST['judul_film'];
-    $perusahaanProduksi = $_POST['perusahaan_produksi'];
+    $periodeRilis = $_POST['periode_rilis'];
 
     // Proses update data
-    $sql = "UPDATE alternatif SET kode_alternatif = '$kodeAlternatif', judul_film = '$judulFilm', perusahaan_produksi = '$perusahaanProduksi'
+    $sql = "UPDATE alternatif SET kode_alternatif = '$kodeAlternatif', judul_film = '$judulFilm', periode_rilis = '$periodeRilis'
             WHERE kode_alternatif = '$kodeAlternatif'";
     if ($conn->query($sql) === TRUE) {
         echo "<script>
@@ -51,8 +51,8 @@ $row = $result->fetch_assoc();
                             <input type="text" name="judul_film" value="<?php echo $row['judul_film'] ?>" maxlength="255" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>Perusahaan Produksi</label>
-                            <input type="text" name="perusahaan_produksi" value="<?php echo $row['perusahaan_produksi'] ?>" maxlength="255" class="form-control" required>
+                            <label>Periode Rilis</label>
+                            <input type="text" name="periode_rilis" value="<?php echo $row['periode_rilis'] ?>" maxlength="255" class="form-control" required>
                         </div>
                         <input type="submit" value="Simpan" name="edit" class="btn btn-primary">
                         <a href="?page=alternatif" class="btn btn-danger">Batal</a>

@@ -22,7 +22,7 @@ SELECT
 a.id,
 a.kode_alternatif,
 a.judul_film,
-a.perusahaan_produksi,
+a.periode_rilis
 SUM(
 (sk.nilai /
 CASE
@@ -45,7 +45,7 @@ FROM alternatif a
 LEFT JOIN penilaian p ON a.id = p.alternatif_id
 LEFT JOIN kriteria k ON p.kriteria_id = k.id
 LEFT JOIN sub_kriteria sk ON p.sub_kriteria_id = sk.id
-GROUP BY a.id, a.kode_alternatif, a.judul_film, a.perusahaan_produksi
+GROUP BY a.id, a.kode_alternatif, a.judul_film, a.periode_rilis
 HAVING nilai_preferensi IS NOT NULL
 ORDER BY nilai_preferensi DESC
 ";
@@ -142,12 +142,8 @@ $film_terbaik = !empty($data_hasil) ? $data_hasil[0] : null;
                                     <td>: <?php echo $film_terbaik['kode_alternatif']; ?></td>
                                 </tr>
                                 <tr>
-                                    <td class="font-weight-bold">Genre</td>
-                                    <td>: <?php echo $film_terbaik['genre'] ?? '-'; ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-bold">Perusahaan Produksi</td>
-                                    <td>: <?php echo $film_terbaik['perusahaan_produksi'] ?? '-'; ?></td>
+                                    <td class="font-weight-bold">Periode Rilis</td>
+                                    <td>: <?php echo $film_terbaik['periode_rilis'] ?? '-'; ?></td>
                                 </tr>
                             </table>
                         </div>
@@ -202,8 +198,7 @@ $film_terbaik = !empty($data_hasil) ? $data_hasil[0] : null;
                                     <th width="80" class="text-center">Rank</th>
                                     <th width="120">Kode</th>
                                     <th>Judul Film</th>
-                                    <th width="150">Genre</th>
-                                    <th width="200">Perusahaan Produksi</th>
+                                    <th width="150">Periode Rilis</th>
                                     <th width="150" class="text-center">Nilai Preferensi</th>
                                     <th width="150" class="text-center">Status</th>
                                 </tr>
@@ -226,8 +221,7 @@ $film_terbaik = !empty($data_hasil) ? $data_hasil[0] : null;
                                         </td>
                                         <td class="align-middle"><strong><?php echo $row['kode_alternatif']; ?></strong></td>
                                         <td class="align-middle"><?php echo $row['judul_film']; ?></td>
-                                        <td class="align-middle"><?php echo $row['genre'] ?? '-'; ?></td>
-                                        <td class="align-middle"><?php echo $row['perusahaan_produksi'] ?? '-'; ?></td>
+                                        <td class="align-middle"><?php echo $row['periode_rilis'] ?? '-'; ?></td>
                                         <td class="text-center align-middle">
                                             <strong class="text-primary">
                                                 <?php echo number_format($row['nilai_preferensi'], 4); ?>
