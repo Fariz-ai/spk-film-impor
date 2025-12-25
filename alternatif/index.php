@@ -8,7 +8,7 @@
                     <th style="width: 5%;">No.</th>
                     <th style="width: 15%;">Kode Alternatif</th>
                     <th style="width: 25%;">Judul Film</th>
-                    <th style="width: 20%;">Perusahaan Produksi</th>
+                    <th style="width: 20%;">Periode Rilis</th>
                     <th style="width: 15%;">Aksi</th>
                 </tr>
             </thead>
@@ -23,7 +23,7 @@
                         <td align="center"><?php echo $no++; ?></td>
                         <td align="center"><?php echo $row["kode_alternatif"]; ?></td>
                         <td align="center"><?php echo $row["judul_film"]; ?></td>
-                        <td align="center"><?php echo $row["perusahaan_produksi"]; ?></td>
+                        <td align="center"><?php echo $row["periode_rilis"]; ?></td>
                         <td align="center">
                             <a class="btn btn-warning" href="?page=alternatif&action=edit&id=<?php echo $row['id']; ?>">
                                 Edit

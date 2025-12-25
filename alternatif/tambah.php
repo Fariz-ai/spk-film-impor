@@ -4,7 +4,7 @@ $error = '';
 if (isset($_POST['simpan'])) {
     $kodeAlternatif = $_POST["kode_alternatif"];
     $judulFilm = $_POST["judul_film"];
-    $perusahaanProduksi = $_POST["perusahaan_produksi"];
+    $periodeRilis = $_POST["periode_rilis"];
 
     // Validasi
     $sql = "SELECT * FROM alternatif WHERE kode_alternatif='$kodeAlternatif'";
@@ -13,8 +13,8 @@ if (isset($_POST['simpan'])) {
         $error = "Validasi Gagal! Data tersebut telah terdaftar.";
     } else {
         // Proses simpan
-        $sql = "INSERT INTO alternatif (kode_alternatif, judul_film, perusahaan_produksi) 
-        VALUES ('$kodeAlternatif', '$judulFilm', '$perusahaanProduksi')";
+        $sql = "INSERT INTO alternatif (kode_alternatif, judul_film, periode_rilis) 
+        VALUES ('$kodeAlternatif', '$judulFilm', '$periodeRilis')";
         if ($conn->query($sql) === TRUE) {
             echo "<script>
             window.location.href='?page=alternatif';
@@ -52,8 +52,8 @@ if (isset($_POST['simpan'])) {
                             <input type="text" class="form-control" name="judul_film" maxlength="255" required>
                         </div>
                         <div class="form-group">
-                            <label>Perusahaan Produksi</label>
-                            <input type="text" class="form-control" name="perusahaan_produksi" maxlength="255" required>
+                            <label>Periode Rilis</label>
+                            <input type="text" class="form-control" name="periode_rilis" maxlength="255" required>
                         </div>
                         <input type="submit" value="Simpan" name="simpan" class="btn btn-primary">
                         <a href="?page=alternatif" class="btn btn-danger">Batal</a>
