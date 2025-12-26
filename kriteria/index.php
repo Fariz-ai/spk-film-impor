@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header bg-primary text-white border-dark"><strong>Data Kriteria</strong></div>
     <div class="card-body">
-        <a href="?page=alternatif&action=tambah" class="btn btn-primary mb-2"><i class="fas fa-plus mr-2"></i>Tambah</a>
+        <a href="?page=kriteria&action=tambah" class="btn btn-primary mb-2"><i class="fas fa-plus mr-2"></i>Tambah</a>
         <table class="table table-bordered" id="table">
             <thead>
                 <tr>
@@ -17,7 +17,7 @@
             <tbody>
                 <?php
                 $no = 1;
-                $sql = "SELECT * FROM kriteria ORDER BY kode_kriteria ASC";
+                $sql = "SELECT * FROM kriteria ORDER BY dibuat_pada DESC";
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                 ?>
