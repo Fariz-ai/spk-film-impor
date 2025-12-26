@@ -17,7 +17,7 @@
             <tbody>
                 <?php
                 $no = 1;
-                $sql = "SELECT * FROM kriteria ORDER BY kode_kriteria ASC";
+                $sql = "SELECT * FROM kriteria ORDER BY dibuat_pada DESC";
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                 ?>
