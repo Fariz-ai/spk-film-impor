@@ -114,13 +114,13 @@ require_once "config.php";
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white px-4 py-3" href="?page=normalisasi">
-                    <i class="fas fa-calculator mr-3"></i> Normalisasi Data
+                <a class="nav-link text-white px-4 py-3" href="?page=penilaian">
+                    <i class="fas fa-calculator mr-3"></i> Penilaian
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white px-4 py-3" href="?page=perhitungan">
-                    <i class="fas fa-chart-line mr-3"></i> Perhitungan SAW
+                <a class="nav-link text-white px-4 py-3" href="?page=hasil">
+                    <i class="fas fa-chart-line mr-3"></i> Hasil Perankingan
                 </a>
             </li>
         </ul>
@@ -146,9 +146,8 @@ require_once "config.php";
                         "alternatif" => "Data Alternatif",
                         "kriteria" => "Data Kriteria",
                         "subkriteria" => "Data Sub-Kriteria",
-                        "normalisasi" => "Normalisasi Data",
-                        "perhitungan" => "Perhitungan SAW",
-                        "hasil" => "Hasil Perhitungan",
+                        "penilaian" => "Penilaian",
+                        "hasil" => "Hasil Perankingan"
                     ];
 
                     if (array_key_exists($page, $titles)) {
@@ -218,10 +217,16 @@ require_once "config.php";
                 } elseif ($action == "hapus") {
                     include "subkriteria/hapus.php";
                 }
-            } elseif ($page == "normalisasi") {
-                include "normalisasi/index.php";
-            } elseif ($page == "perhitungan") {
-                include "perhitungan/index.php";
+            } elseif ($page == "penilaian") {
+                if ($action == "") {
+                    include "penilaian/index.php";
+                } elseif ($action == "tambah") {
+                    include "penilaian/tambah.php";
+                } elseif ($action == "edit") {
+                    include "penilaian/edit.php";
+                } elseif ($action == "hapus") {
+                    include "penilaian/hapus.php";
+                }
             } elseif ($page == "hasil") {
                 include "hasil/index.php";
             } else {
@@ -281,6 +286,62 @@ require_once "config.php";
     <script>
         $(function() {
             $('.chosen').chosen();
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Script untuk load sub-kriteria berdasarkan kriteria (halaman penilaian TAMBAH)
+            $('#kriteria_id').on('change', function() {
+                var kriteriaId = $(this).val();
+                console.log('Kriteria ID:', kriteriaId);
+
+                if (kriteriaId) {
+                    $.ajax({
+                        url: 'penilaian/get_subkriteria.php',
+                        type: 'POST',
+                        data: {
+                            kriteria_id: kriteriaId
+                        },
+                        success: function(response) {
+                            console.log('Response:', response);
+                            $('#sub_kriteria_id').html(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                            alert('Gagal memuat data sub-kriteria');
+                        }
+                    });
+                } else {
+                    $('#sub_kriteria_id').html('<option value="">Pilih Kriteria terlebih dahulu</option>');
+                }
+            });
+
+            // Script untuk load sub-kriteria berdasarkan kriteria (halaman penilaian EDIT)
+            $('#kriteria_id_edit').on('change', function() {
+                var kriteriaId = $(this).val();
+                console.log('Kriteria ID Edit:', kriteriaId);
+
+                if (kriteriaId) {
+                    $.ajax({
+                        url: 'penilaian/get_subkriteria.php',
+                        type: 'POST',
+                        data: {
+                            kriteria_id: kriteriaId
+                        },
+                        success: function(response) {
+                            console.log('Response Edit:', response);
+                            $('#sub_kriteria_id_edit').html(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error Edit:', error);
+                            alert('Gagal memuat data sub-kriteria');
+                        }
+                    });
+                } else {
+                    $('#sub_kriteria_id_edit').html('<option value="">Pilih Kriteria terlebih dahulu</option>');
+                }
+            });
         });
     </script>
 
