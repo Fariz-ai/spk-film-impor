@@ -16,6 +16,22 @@ $total_subkriteria = mysqli_fetch_assoc($query_subkriteria)['total'];
 $queryPeriodeTerbaru = mysqli_query($conn, "SELECT MAX(periode) AS periode_terbaru FROM hasil");
 $periodeTerbaru = mysqli_fetch_assoc($queryPeriodeTerbaru)['periode_terbaru'];
 
+$periodeBulan = [
+    1 => 'Januari',
+    2 => 'Februari',
+    3 => 'Maret',
+    4 => 'April',
+    5 => 'Mei',
+    6 => 'Juni',
+    7 => 'Juli',
+    8 => 'Agustus',
+    9 => 'September',
+    10 => 'Oktober',
+    11 => 'November',
+    12 => 'Desember'
+];
+
+
 // Query untuk hasil perankingan berdasarkan periode terbaru
 $hasilRanking = [];
 if ($periodeTerbaru) {
@@ -92,7 +108,7 @@ if ($periodeTerbaru) {
                 <strong>Hasil Perankingan Terbaru</strong>
                 <?php if ($periodeTerbaru): ?>
                     <span class="float-right">
-                        Periode: <?= date('F Y', strtotime($periodeTerbaru)) ?>
+                        Periode: <?= $periodeBulan[(int)date('n', strtotime($periodeTerbaru))] . ' ' . date('Y', strtotime($periodeTerbaru)) ?>
                     </span>
                 <?php endif; ?>
             </div>
