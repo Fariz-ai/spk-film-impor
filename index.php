@@ -2,8 +2,8 @@
 date_default_timezone_set("Asia/Jakarta");
 require_once "config.php";
 
-// session_start();
-// $nama_user = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : 'Guest';
+session_start();
+$namaPengguna = $_SESSION['nama_lengkap'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -76,10 +76,14 @@ require_once "config.php";
 </head>
 
 <body class="bg-light">
+    <!-- Cek status login -->
+    <?php
+    if ($_SESSION['status'] != "login") {
+        header("Location:login.php");
+    }
+    ?>
 
-    <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
     <!-- Sidebar -->
     <div class="sidebar shadow-lg overflow-auto" id="sidebar">
         <!-- Logo -->
@@ -123,13 +127,19 @@ require_once "config.php";
                     <i class="fas fa-chart-line mr-3"></i> Hasil Perankingan
                 </a>
             </li>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin') : ?>
+                <li class="nav-item">
+                    <a class="nav-link text-white px-4 py-3" href="?page=pengguna">
+                        <i class="fas fa-users mr-3"></i> Data Pengguna
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top top-navbar">
         <div class="container-fluid">
-            <!-- Left Side -->
             <div class="d-flex align-items-center">
                 <!-- Toggle Button untuk Mobile -->
                 <button class="btn btn-link text-dark d-lg-none mr-2" id="sidebarToggle" type="button">
@@ -147,7 +157,8 @@ require_once "config.php";
                         "kriteria" => "Data Kriteria",
                         "subkriteria" => "Data Sub-Kriteria",
                         "penilaian" => "Penilaian",
-                        "hasil" => "Hasil Perankingan"
+                        "hasil" => "Hasil Perankingan",
+                        "pengguna" => "Data Pengguna",
                     ];
 
                     if (array_key_exists($page, $titles)) {
@@ -162,11 +173,10 @@ require_once "config.php";
             <!-- Right Side -->
             <div class="d-flex align-items-center">
                 <!-- User Info -->
-                <!-- <div class="bg-light rounded-pill px-3 py-2 mr-3 d-none d-md-inline-block">
+                <div class="bg-light rounded-pill px-3 py-2 mr-3 d-none d-md-inline-block">
                     <i class="fas fa-user-circle text-primary"></i>
-                    <span class="ml-2 font-weight-medium"><?php // echo $nama_user; 
-                                                            ?></span>
-                </div> -->
+                    <span class="ml-2 font-weight-medium"><?php echo $namaPengguna; ?></span>
+                </div>
 
                 <!-- Logout Button -->
                 <a href="logout.php" class="btn btn-danger btn-sm rounded-pill" onclick="return confirm('Apakah Anda yakin ingin logout?')">
@@ -181,10 +191,11 @@ require_once "config.php";
     <div class="main-content p-4">
         <div class="container-fluid">
             <?php
-            // pengaturan menu
+            // Pengaturan menu
             $page = isset($_GET['page']) ? $_GET['page'] : "";
             $action = isset($_GET['action']) ? $_GET['action'] : "";
 
+            // Routing
             if ($page == "") {
                 include "dashboard.php";
             } elseif ($page == "alternatif") {
@@ -229,6 +240,22 @@ require_once "config.php";
                 }
             } elseif ($page == "hasil") {
                 include "hasil/index.php";
+            } elseif ($page == "pengguna") {
+                if ($_SESSION['role'] !== 'Admin') {
+                    include "aksesDitolak.php";
+                } else {
+                    if ($action == "") {
+                        include "pengguna/index.php";
+                    } elseif ($action == "tambah") {
+                        include "pengguna/tambah.php";
+                    } elseif ($action == "edit") {
+                        include "pengguna/edit.php";
+                    } elseif ($action == "hapus") {
+                        include "pengguna/hapus.php";
+                    }
+                }
+            } elseif ($page == "logout") {
+                include "logout.php";
             } else {
                 include "notFound.php";
             }
