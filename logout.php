@@ -1,10 +1,9 @@
-<?php 
-// mengaktifkan session
+<?php
+// Mengaktifkan session
 session_start();
- 
-// menghapus semua session
+
+// Menghapus semua session
 session_destroy();
- 
-// mengalihkan halaman sambil mengirim pesan logout
+
+// Mengalihkan halaman
 header("Location:login.php");
-?>
