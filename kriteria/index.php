@@ -1,7 +1,32 @@
 <div class="card">
     <div class="card-header bg-primary text-white border-dark"><strong>Data Kriteria</strong></div>
     <div class="card-body">
-        <a href="?page=kriteria&action=tambah" class="btn btn-primary mb-2"><i class="fas fa-plus mr-2"></i>Tambah</a>
+        <?php
+        $sqlTotal = "SELECT SUM(bobot) AS total_bobot FROM kriteria";
+        $resultTotal = $conn->query($sqlTotal);
+        $rowTotal = $resultTotal->fetch_assoc();
+        $totalBobot = floatval($rowTotal['total_bobot']);
+        $sisaBobot = 1 - $totalBobot;
+
+        if ($sisaBobot < 0) {
+            $sisaBobot = 0;
+        }
+        ?>
+        <div class="alert alert-info shadow-sm">
+            <strong>Total Bobot:</strong> <?= number_format($totalBobot, 2); ?>
+            &nbsp;|&nbsp;
+            <strong>Sisa Bobot:</strong> <?= number_format($sisaBobot, 2); ?>
+        </div>
+        <?php if ($sisaBobot > 0): ?>
+            <a href="?page=kriteria&action=tambah" class="btn btn-primary mb-2">
+                <i class="fas fa-plus mr-2"></i>Tambah
+            </a>
+        <?php else: ?>
+            <button class="btn btn-secondary mb-2" disabled>
+                <i class="fas fa-lock mr-2"></i>Bobot Penuh
+            </button>
+        <?php endif; ?>
+
         <table class="table table-bordered" id="table">
             <thead>
                 <tr>

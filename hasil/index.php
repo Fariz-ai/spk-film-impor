@@ -71,7 +71,7 @@ if (!empty($data)) {
         $krt   = $row['kode_kriteria'];
         $nilai = $row['nilai'];
 
-        $normalisasi = ($row['jenis'] === 'benefit')
+        $normalisasi = ($row['jenis'] === 'Benefit')
             ? $nilai / $maxNilai[$krt]
             : $minNilai[$krt] / $nilai;
 
@@ -152,7 +152,7 @@ if (isset($_POST['simpan']) && !empty($preferensi)) {
                     foreach ($data as $row) :
                         $k = $row['kode_kriteria'];
                         $n = $row['nilai'];
-                        $norm = ($row['jenis'] === 'benefit')
+                        $norm = ($row['jenis'] === 'Benefit')
                             ? $n / $maxNilai[$k]
                             : $minNilai[$k] / $n;
                 ?>
