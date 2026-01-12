@@ -27,6 +27,17 @@
             </button>
         <?php endif; ?>
 
+        <?php
+        // Cek apakah ada data kriteria
+        $sql_count = "SELECT COUNT(*) as total FROM kriteria";
+        $result_count = $conn->query($sql_count);
+        $row_count = $result_count->fetch_assoc();
+        $ada_data = $row_count['total'] > 0;
+        ?>
+        <a href="kriteria/cetak.php" class="btn btn-<?php echo $ada_data ? 'success' : 'secondary'; ?> mb-2 <?php echo $ada_data ? '' : 'disabled'; ?>" <?php echo $ada_data ? '' : 'onclick="return false;"'; ?> target="_blank">
+            <i class="fas fa-print mr-2"></i>Cetak
+        </a>
+
         <table class="table table-bordered" id="table">
             <thead>
                 <tr>

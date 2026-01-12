@@ -2,6 +2,19 @@
     <div class="card-header bg-primary text-white border-dark"><strong>Data Pengguna</strong></div>
     <div class="card-body">
         <a href="?page=pengguna&action=tambah" class="btn btn-primary mb-2"><i class="fas fa-plus mr-2"></i>Tambah</a>
+        <!-- Cek apakah ada data -->
+        <?php
+        $sql_count = "SELECT COUNT(*) AS total FROM pengguna";
+        $result_count = $conn->query($sql_count);
+        $row_count = $result_count->fetch_assoc();
+        $ada_data = $row_count['total'] > 0;
+        ?>
+        <a href="pengguna/cetak.php"
+            class="btn btn-<?php echo $ada_data ? 'success' : 'secondary'; ?> mb-2 ml-1 <?php echo $ada_data ? '' : 'disabled'; ?>"
+            <?php echo $ada_data ? '' : 'onclick="return false;"'; ?>
+            target="_blank">
+            <i class="fas fa-print mr-2"></i>Cetak
+        </a>
         <table class="table table-bordered" id="table">
             <thead>
                 <tr>
@@ -15,7 +28,7 @@
             <tbody>
                 <?php
                 $no = 1;
-                $sql = "SELECT * FROM pengguna ORDER BY 
+                $sql = "SELECT id, nama_lengkap, email, role FROM pengguna ORDER BY 
                         CASE 
                             WHEN role = 'Admin' THEN 0
                             ELSE 1
