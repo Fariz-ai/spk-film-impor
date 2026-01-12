@@ -173,6 +173,17 @@ if (isset($_POST['simpan']) && !empty($preferensi)) {
             </tbody>
         </table>
 
+        <?php
+        // Cek apakah ada data hasil untuk periode terpilih
+        $ada_hasil = false;
+        if (!empty($filterPeriode)) {
+            $periodeCetak = $filterPeriode . '-01';
+            $qCek = $conn->query("SELECT COUNT(*) AS total FROM hasil WHERE periode='$periodeCetak'");
+            $c = $qCek->fetch_assoc();
+            $ada_hasil = $c['total'] > 0;
+        }
+        ?>
+
         <?php if (!empty($preferensi)) : ?>
             <h5>Hasil Perankingan</h5>
             <table class="table table-bordered">
@@ -195,12 +206,23 @@ if (isset($_POST['simpan']) && !empty($preferensi)) {
                 </tbody>
             </table>
 
-            <form method="POST">
-                <input type="hidden" name="periode" value="<?= $filterPeriode ?>">
-                <button type="submit" name="simpan" class="btn btn-success">
-                    Simpan Hasil
-                </button>
-            </form>
+            <div class="mt-3">
+                <form method="POST" class="d-inline">
+                    <input type="hidden" name="periode" value="<?= $filterPeriode ?>">
+                    <button type="submit" name="simpan" class="btn btn-primary">
+                        Simpan Hasil
+                    </button>
+                </form>
+
+                <a href="hasil/cetak.php?periode=<?= $filterPeriode ?>"
+                    class="btn btn-<?= $ada_hasil ? 'success' : 'secondary' ?> ml-2 <?= $ada_hasil ? '' : 'disabled' ?>"
+                    <?= $ada_hasil ? '' : 'onclick="return false;"' ?>
+                    target="_blank">
+                    <i class="fas fa-print mr-2"></i>Cetak
+                </a>
+
+            </div>
+
         <?php endif; ?>
 
     </div>

@@ -27,6 +27,15 @@ if (!empty($filterPeriode)) {
 $sql .= " ORDER BY penilaian.periode DESC, alternatif.kode_alternatif ASC, kriteria.kode_kriteria ASC";
 $result = $conn->query($sql);
 
+// Cek apakah ada data penilaian
+$sql_count = "SELECT COUNT(*) as total FROM penilaian";
+if (!empty($filterPeriode)) {
+    $sql_count .= " WHERE DATE_FORMAT(periode, '%Y-%m') = '$filterPeriode'";
+}
+$result_count = $conn->query($sql_count);
+$row_count = $result_count->fetch_assoc();
+$ada_data = $row_count['total'] > 0;
+
 // Query periode
 $sqlPeriode = "SELECT DISTINCT DATE_FORMAT(periode, '%Y-%m') AS periode_format FROM penilaian ORDER BY periode DESC";
 $resultPeriode = $conn->query($sqlPeriode);
@@ -60,6 +69,19 @@ $periodeBulan = [
                         <a href="?page=penilaian&action=tambah" class="btn btn-primary">
                             <i class="fa fa-plus"></i> Tambah Data
                         </a>
+
+                        <?php
+                        $cetakUrl = 'penilaian/cetak.php';
+                        if (!empty($filterPeriode)) {
+                            $cetakUrl .= '?periode=' . $filterPeriode;
+                        }
+                        ?>
+                        <a href="<?php echo $cetakUrl; ?>"
+                            class="btn btn-<?php echo $ada_data ? 'success' : 'secondary'; ?> <?php echo $ada_data ? '' : 'disabled'; ?>"
+                            <?php echo $ada_data ? '' : 'onclick="return false;"'; ?>
+                            target="_blank">
+                            <i class="fas fa-print"></i> Cetak
+                        </a>
                     </div>
                     <div class="col-md-6">
                         <form method="GET" class="form-inline float-right">
@@ -68,7 +90,11 @@ $periodeBulan = [
                             <select name="periode" class="form-control chosen" onchange="this.form.submit()">
                                 <option value="">Semua Periode</option>
 
-                                <?php while ($rowPeriode = $resultPeriode->fetch_assoc()): ?>
+                                <?php
+                                // Reset pointer untuk select periode
+                                $resultPeriode->data_seek(0);
+                                while ($rowPeriode = $resultPeriode->fetch_assoc()):
+                                ?>
                                     <?php
                                     $timestamp = strtotime($rowPeriode['periode_format'] . '-01');
                                     $bulan = (int) date('n', $timestamp);

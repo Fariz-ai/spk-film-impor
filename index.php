@@ -207,6 +207,8 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
                     include "alternatif/edit.php";
                 } elseif ($action == "hapus") {
                     include "alternatif/hapus.php";
+                } elseif ($action == "cetak") {
+                    include "alternatif/cetak.php";
                 }
             } elseif ($page == "kriteria") {
                 if ($action == "") {
@@ -217,6 +219,8 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
                     include "kriteria/edit.php";
                 } elseif ($action == "hapus") {
                     include "kriteria/hapus.php";
+                } elseif ($action == "cetak") {
+                    include "kriteria/cetak.php";
                 }
             } elseif ($page == "subkriteria") {
                 if ($action == "") {
@@ -227,6 +231,8 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
                     include "subkriteria/edit.php";
                 } elseif ($action == "hapus") {
                     include "subkriteria/hapus.php";
+                } elseif ($action == "cetak") {
+                    include "subkriteria/cetak.php";
                 }
             } elseif ($page == "penilaian") {
                 if ($action == "") {
@@ -237,9 +243,15 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
                     include "penilaian/edit.php";
                 } elseif ($action == "hapus") {
                     include "penilaian/hapus.php";
+                } elseif ($action == "cetak") {
+                    include "penilaian/cetak.php";
                 }
             } elseif ($page == "hasil") {
-                include "hasil/index.php";
+                if ($action == "") {
+                    include "hasil/index.php";
+                } elseif ($action == "tambah") {
+                    include "hasil/cetak.php";
+                }
             } elseif ($page == "pengguna") {
                 if ($_SESSION['role'] !== 'Admin') {
                     include "aksesDitolak.php";
@@ -252,6 +264,8 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
                         include "pengguna/edit.php";
                     } elseif ($action == "hapus") {
                         include "pengguna/hapus.php";
+                    } elseif ($action == "cetak") {
+                        include "pengguna/cetak.php";
                     }
                 }
             } elseif ($page == "logout") {

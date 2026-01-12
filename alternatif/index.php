@@ -2,6 +2,16 @@
     <div class="card-header bg-primary text-white border-dark"><strong>Data Alternatif</strong></div>
     <div class="card-body">
         <a href="?page=alternatif&action=tambah" class="btn btn-primary mb-2"><i class="fas fa-plus mr-2"></i>Tambah</a>
+        <?php
+        // Cek apakah ada data
+        $sql_count = "SELECT COUNT(*) as total FROM alternatif";
+        $result_count = $conn->query($sql_count);
+        $row_count = $result_count->fetch_assoc();
+        $ada_data = $row_count['total'] > 0;
+        ?>
+        <a href="alternatif/cetak.php" class="btn btn-<?php echo $ada_data ? 'success' : 'secondary'; ?> mb-2 <?php echo $ada_data ? '' : 'disabled'; ?>" <?php echo $ada_data ? '' : 'onclick="return false;"'; ?> target="_blank">
+            <i class="fas fa-print mr-2"></i>Cetak
+        </a>
         <table class="table table-bordered" id="table">
             <thead>
                 <tr>
