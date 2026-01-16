@@ -6,131 +6,160 @@ $mpdf = new \Mpdf\Mpdf([
     'mode' => 'utf-8',
     'format' => 'A4',
     'orientation' => 'P',
-    'margin_left' => 10,
-    'margin_right' => 10,
+    'margin_left' => 15,
+    'margin_right' => 15,
     'margin_top' => 45,
-    'margin_bottom' => 25,
-    'margin_header' => 10,
-    'margin_footer' => 10
+    'margin_bottom' => 35
 ]);
 
-// Header
-$header = '
-<table width="100%" style="border-bottom:1px solid #000;padding-bottom:10px;">
-    <tr>
-        <td align="center">
-            <h2 style="margin:5px 0;font-size:18px;">PT. CINEMA MULTIMEDIA</h2>
-            <h3 style="margin:5px 0;font-size:14px;">LAPORAN DATA PENGGUNA</h3>
-            <p style="margin:5px 0;font-size:10px;">
-                Tanggal Cetak: ' . date('d/m/Y H:i:s') . '
-            </p>
-        </td>
-    </tr>
-</table>';
+$bulan = [
+    1 => 'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
+];
 
-// Footer
-$footer = '
-<table width="100%" style="border-top:1px solid #000;padding-top:5px;">
-    <tr>
-        <td align="center" style="font-size:9px;font-style:italic;">
-            Halaman {PAGENO} dari {nbpg}
-        </td>
-    </tr>
-</table>';
+$logoPath = __DIR__ . '/../assets/images/logo.png';
+
+$header = '
+<div style="padding:5px 10px 0 10px;">
+
+    <div style="text-align:center;">
+        <img src="' . $logoPath . '" width="120">
+    </div>
+
+    <div style="text-align:center; font-size:10px; margin-top:2px;">
+        Gedung Kopi, Jl. RP Soeroso No.20 9, RT.9/RW.5, Cikini,<br>
+        Kec. Menteng, Jakarta, Daerah Khusus Ibukota Jakarta 10330
+    </div>
+
+    <div style="text-align:center; font-size:14px; font-weight:bold; margin-top:6px;">
+        LAPORAN DATA PENGGUNA
+    </div>
+
+</div>
+';
 
 $mpdf->SetHTMLHeader($header);
-$mpdf->SetHTMLFooter($footer);
 
-// Query data pengguna
-$sql = "SELECT nama_lengkap, email, role, dibuat_pada FROM pengguna
-        ORDER BY 
-            CASE 
-                WHEN role = 'Admin' THEN 0
-                ELSE 1
-            END,
-            dibuat_pada DESC";
+$mpdf->SetHTMLFooter('
+<div style="border-top:1px solid #000; text-align:center; font-size:10px; padding-top:4px;">
+    Halaman {PAGENO} dari {nbpg}
+</div>
+');
 
+$sql = "
+    SELECT nama_lengkap, email, role, dibuat_pada
+    FROM pengguna
+    ORDER BY 
+        CASE WHEN role = 'Admin' THEN 0 ELSE 1 END,
+        dibuat_pada DESC
+";
 $result = $conn->query($sql);
 
-// Content
 $html = '
 <style>
     body { font-family: Arial, sans-serif; }
     table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
+        width:100%;
+        border-collapse:collapse;
+        margin-top:8px;
     }
     th {
-        background-color: #C8DCFF;
-        border: 1px solid #000;
-        padding: 8px 5px;
-        font-size: 10px;
-        text-align: center;
+        background:#CFE2FF;
+        border:1px solid #000;
+        padding:8px;
+        font-size:11px;
+        text-align:center;
     }
     td {
-        border: 1px solid #000;
-        padding: 6px 5px;
-        font-size: 9px;
+        border:1px solid #000;
+        padding:7px;
+        font-size:10px;
     }
-    .text-center { text-align: center; }
-    .text-left { text-align: left; }
-    .no-data {
-        text-align: center;
-        font-style: italic;
-        color: #666;
-    }
-    .footer-info {
-        margin-top: 15px;
-        font-weight: bold;
-        font-size: 10px;
-    }
+    .center { text-align:center; }
+    .left { text-align:left; }
 </style>
 
 <table>
-    <thead>
-        <tr>
-            <th width="5%">No</th>
-            <th width="30%">Nama Lengkap</th>
-            <th width="35%">Email</th>
-            <th width="15%">Role</th>
-            <th width="15%">Tanggal Dibuat</th>
-        </tr>
-    </thead>
-    <tbody>';
+<thead>
+<tr>
+    <th width="7%">No</th>
+    <th width="30%">Nama Lengkap</th>
+    <th width="33%">Email</th>
+    <th width="15%">Role</th>
+    <th width="15%">Tanggal Dibuat</th>
+</tr>
+</thead>
+<tbody>
+';
 
 if ($result->num_rows > 0) {
     $no = 1;
     while ($row = $result->fetch_assoc()) {
+
+        $tgl = strtotime($row['dibuat_pada']);
+        $tglDisplay = date('d', $tgl) . ' ' .
+            $bulan[date('n', $tgl)] . ' ' .
+            date('Y', $tgl);
+
         $html .= '
         <tr>
-            <td class="text-center">' . $no++ . '</td>
-            <td class="text-left">' . htmlspecialchars($row['nama_lengkap']) . '</td>
-            <td class="text-left">' . htmlspecialchars($row['email']) . '</td>
-            <td class="text-center">' . htmlspecialchars($row['role']) . '</td>
-            <td class="text-center">' . date('d/m/Y', strtotime($row['dibuat_pada'])) . '</td>
+            <td class="center">' . $no++ . '</td>
+            <td class="left">' . htmlspecialchars($row['nama_lengkap']) . '</td>
+            <td class="left">' . htmlspecialchars($row['email']) . '</td>
+            <td class="center">' . htmlspecialchars($row['role']) . '</td>
+            <td class="center">' . $tglDisplay . '</td>
         </tr>';
     }
-    $totalData = $result->num_rows;
+    $total = $result->num_rows;
 } else {
     $html .= '
         <tr>
-            <td colspan="5" class="no-data">Tidak ada data pengguna</td>
+            <td colspan="5" class="center">Tidak ada data pengguna</td>
         </tr>';
-    $totalData = 0;
+    $total = 0;
 }
 
 $html .= '
-    </tbody>
+</tbody>
 </table>
 
-<div class="footer-info">
-    Total Data: ' . $totalData . ' pengguna
-</div>';
+<p style="margin-top:10px; font-size:11px; font-weight:bold;">
+    Total Data: ' . $total . ' pengguna
+</p>
+';
+
+$tanggalCetak = date('d') . ' ' . $bulan[date('n')] . ' ' . date('Y');
+
+$html .= '
+<div style="margin-top:45px; width:100%;">
+    <div style="width:40%; float:right; text-align:right; font-size:12px;">
+        <div>Jakarta, ' . $tanggalCetak . '</div>
+
+        <div style="height:80px;"></div>
+
+        <div style="font-weight:bold; text-decoration:underline;">
+            Inne Fadlianty
+        </div>
+        <div>Staff</div>
+    </div>
+</div>
+';
 
 $mpdf->WriteHTML($html);
 $conn->close();
 
-// Output PDF
-$mpdf->Output('Laporan_Data_Pengguna_' . date('Ymd_His') . '.pdf', 'I');
+$mpdf->Output(
+    'Laporan_Data_Pengguna_' . date('Ymd_His') . '.pdf',
+    'I'
+);
 exit;

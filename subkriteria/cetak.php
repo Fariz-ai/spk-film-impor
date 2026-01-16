@@ -6,135 +6,163 @@ $mpdf = new \Mpdf\Mpdf([
     'mode' => 'utf-8',
     'format' => 'A4',
     'orientation' => 'P',
-    'margin_left' => 10,
-    'margin_right' => 10,
-    'margin_top' => 48,
-    'margin_bottom' => 25,
-    'margin_header' => 10,
-    'margin_footer' => 10
+    'margin_left' => 15,
+    'margin_right' => 15,
+    'margin_top' => 45,
+    'margin_bottom' => 35
 ]);
 
-// Set Header
-$header = '
-<table width="100%" style="border-bottom: 1px solid #000; padding-bottom: 10px;">
-    <tr>
-        <td align="center">
-            <h2 style="margin: 5px 0; font-size: 18px;">PT. CINEMA MULTIMEDIA</h2>
-            <h3 style="margin: 5px 0; font-size: 14px;">LAPORAN DATA SUB-KRITERIA</h3>
-            <p style="margin: 5px 0; font-size: 10px;">Tanggal Cetak: ' . date('d/m/Y H:i:s') . '</p>
-        </td>
-    </tr>
-</table>';
+$logoPath = __DIR__ . '/../assets/images/logo.png';
 
-// Set Footer
-$footer = '
-<table width="100%" style="border-top: 1px solid #000; padding-top: 5px;">
-    <tr>
-        <td align="center" style="font-size: 9px; font-style: italic;">
-            Halaman {PAGENO} dari {nbpg}
-        </td>
-    </tr>
-</table>';
+$header = '
+<div style="padding:5px 10px 0 10px;">
+
+    <div style="text-align:center;">
+        <img src="' . $logoPath . '" width="120">
+    </div>
+
+    <div style="text-align:center; font-size:10px; margin-top:2px;">
+        Gedung Kopi, Jl. RP Soeroso No.20 9, RT.9/RW.5, Cikini,<br>
+        Kec. Menteng, Jakarta, Daerah Khusus Ibukota Jakarta 10330
+    </div>
+
+    <div style="
+        text-align:center;
+        font-size:14px;
+        font-weight:bold;
+        margin-top:6px;
+    ">
+        LAPORAN DATA SUB-KRITERIA
+    </div>
+
+</div>
+';
 
 $mpdf->SetHTMLHeader($header);
-$mpdf->SetHTMLFooter($footer);
 
-// Query data
-$sql = "SELECT sub_kriteria.*, kriteria.nama_kriteria, kriteria.kode_kriteria
-        FROM sub_kriteria 
-        INNER JOIN kriteria ON sub_kriteria.kriteria_id = kriteria.id
-        ORDER BY kriteria.kode_kriteria ASC, sub_kriteria.nilai DESC";
+$mpdf->SetHTMLFooter('
+<div style="border-top:1px solid #000; text-align:center; font-size:10px; padding-top:4px;">
+    Halaman {PAGENO} dari {nbpg}
+</div>
+');
+
+$sql = "
+    SELECT 
+        sub_kriteria.*, 
+        kriteria.kode_kriteria,
+        kriteria.nama_kriteria
+    FROM sub_kriteria
+    INNER JOIN kriteria 
+        ON sub_kriteria.kriteria_id = kriteria.id
+    ORDER BY kriteria.kode_kriteria ASC, sub_kriteria.nilai DESC
+";
 $result = $conn->query($sql);
 
-// Content
+$bulan = [
+    1 => 'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
+];
+
 $html = '
 <style>
-    body {
-        font-family: Arial, sans-serif;
-    }
+    body { font-family: Arial, sans-serif; }
     table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
+        width:100%;
+        border-collapse:collapse;
+        margin-top:8px;
     }
     th {
-        background-color: #C8DCFF;
-        color: #000;
-        font-weight: bold;
-        padding: 10px 8px;
-        border: 1px solid #000;
-        text-align: center;
-        font-size: 11px;
+        background:#CFE2FF;
+        border:1px solid #000;
+        padding:8px;
+        font-size:12px;
+        text-align:center;
     }
     td {
-        padding: 8px;
-        border: 1px solid #000;
-        font-size: 10px;
-        vertical-align: top;
+        border:1px solid #000;
+        padding:7px;
+        font-size:10px;
+        vertical-align:top;
     }
-    .text-center {
-        text-align: center;
-    }
-    .text-left {
-        text-align: left;
-    }
-    .no-data {
-        font-style: italic;
-        color: #666;
-        text-align: center;
-    }
-    .footer-info {
-        margin-top: 15px;
-        font-weight: bold;
-        font-size: 11px;
-    }
+    .center { text-align:center; }
+    .left { text-align:left; }
 </style>
 
 <table>
-    <thead>
-        <tr>
-            <th width="8%">No.</th>
-            <th width="25%">Nama Kriteria</th>
-            <th width="12%">Nilai</th>
-            <th width="55%">Keterangan</th>
-        </tr>
-    </thead>
-    <tbody>';
+<thead>
+<tr>
+    <th width="7%">No</th>
+    <th width="18%">Kode</th>
+    <th width="25%">Nama Kriteria</th>
+    <th width="10%">Nilai</th>
+    <th width="40%">Keterangan</th>
+</tr>
+</thead>
+<tbody>
+';
 
 if ($result->num_rows > 0) {
     $no = 1;
     while ($row = $result->fetch_assoc()) {
         $html .= '
         <tr>
-            <td class="text-center">' . $no++ . '</td>
-            <td class="text-left">' . htmlspecialchars($row['nama_kriteria']) . '</td>
-            <td class="text-center">' . htmlspecialchars($row['nilai']) . '</td>
-            <td class="text-left">' . htmlspecialchars($row['keterangan']) . '</td>
+            <td class="center">' . $no++ . '</td>
+            <td class="center">' . htmlspecialchars($row['kode_kriteria']) . '</td>
+            <td class="left">' . htmlspecialchars($row['nama_kriteria']) . '</td>
+            <td class="center">' . htmlspecialchars($row['nilai']) . '</td>
+            <td class="left">' . htmlspecialchars($row['keterangan']) . '</td>
         </tr>';
     }
-
-    $totalData = $result->num_rows;
+    $total = $result->num_rows;
 } else {
     $html .= '
         <tr>
-            <td colspan="4" class="no-data">Tidak ada data sub-kriteria</td>
+            <td colspan="5" class="center">Tidak ada data sub-kriteria</td>
         </tr>';
-
-    $totalData = 0;
+    $total = 0;
 }
 
 $html .= '
-    </tbody>
+</tbody>
 </table>
 
-<div class="footer-info">
-    Total Data: ' . $totalData . ' sub-kriteria
-</div>';
+<p style="margin-top:10px; font-size:11px; font-weight:bold;">
+    Total Data: ' . $total . ' sub-kriteria
+</p>
+';
+
+$tanggalCetak = date('d') . ' ' . $bulan[date('n')] . ' ' . date('Y');
+
+$html .= '
+<div style="margin-top:45px; width:100%;">
+    <div style="width:40%; float:right; text-align:right; font-size:12px;">
+        <div>Jakarta, ' . $tanggalCetak . '</div>
+
+        <div style="height:80px;"></div>
+
+        <div style="font-weight:bold; text-decoration:underline;">
+            Inne Fadlianty
+        </div>
+        <div>Staff</div>
+    </div>
+</div>
+';
 
 $mpdf->WriteHTML($html);
-
 $conn->close();
 
-// Output PDF
-$mpdf->Output('Laporan_Data_Sub_Kriteria_' . date('Ymd_His') . '.pdf', 'I');
+$mpdf->Output(
+    'Laporan_Data_Sub_Kriteria_' . date('Ymd_His') . '.pdf',
+    'I'
+);
 exit;

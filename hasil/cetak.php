@@ -2,174 +2,178 @@
 include_once "../config.php";
 require_once '../vendor/autoload.php';
 
-// Filter periode dari URL
 $filterPeriode = $_GET['periode'] ?? '';
 
 $mpdf = new \Mpdf\Mpdf([
     'mode' => 'utf-8',
     'format' => 'A4',
-    'orientation' => 'L',
-    'margin_left' => 10,
-    'margin_right' => 10,
-    'margin_top' => 48,
-    'margin_bottom' => 25,
-    'margin_header' => 10,
-    'margin_footer' => 10
+    'orientation' => 'P',
+    'margin_left' => 15,
+    'margin_right' => 15,
+    'margin_top' => 45,
+    'margin_bottom' => 35
 ]);
 
-$periodeBulan = [
+$bulan = [
     1 => 'Januari',
-    2 => 'Februari',
-    3 => 'Maret',
-    4 => 'April',
-    5 => 'Mei',
-    6 => 'Juni',
-    7 => 'Juli',
-    8 => 'Agustus',
-    9 => 'September',
-    10 => 'Oktober',
-    11 => 'November',
-    12 => 'Desember'
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
 ];
 
-// Judul berdasarkan periode
 $judulPeriode = '';
 if (!empty($filterPeriode)) {
     $ts = strtotime($filterPeriode . '-01');
-    $judulPeriode = ' - ' . $periodeBulan[date('n', $ts)] . ' ' . date('Y', $ts);
+    $judulPeriode = ' - ' . $bulan[date('n', $ts)] . ' ' . date('Y', $ts);
 }
 
-// Header
-$header = '
-<table width="100%" style="border-bottom:1px solid #000;padding-bottom:10px;">
-    <tr>
-        <td align="center">
-            <h2 style="margin:5px 0;font-size:18px;">PT. CINEMA MULTIMEDIA</h2>
-            <h3 style="margin:5px 0;font-size:14px;">
-                LAPORAN HASIL PERANKINGAN' . $judulPeriode . '
-            </h3>
-            <p style="margin:5px 0;font-size:10px;">
-                Tanggal Cetak: ' . date('d/m/Y H:i:s') . '
-            </p>
-        </td>
-    </tr>
-</table>';
+$logoPath = __DIR__ . '/../assets/images/logo.png';
 
-// Footer
-$footer = '
-<table width="100%" style="border-top:1px solid #000;padding-top:5px;">
-    <tr>
-        <td align="center" style="font-size:9px;font-style:italic;">
-            Halaman {PAGENO} dari {nbpg}
-        </td>
-    </tr>
-</table>';
+$header = '
+<div style="padding:5px 10px 0 10px;">
+
+    <div style="text-align:center;">
+        <img src="' . $logoPath . '" width="120">
+    </div>
+
+    <div style="text-align:center; font-size:10px; margin-top:2px;">
+        Gedung Kopi, Jl. RP Soeroso No.20 9, RT.9/RW.5, Cikini,<br>
+        Kec. Menteng, Jakarta, Daerah Khusus Ibukota Jakarta 10330
+    </div>
+
+    <div style="text-align:center; font-size:14px; font-weight:bold; margin-top:6px;">
+        LAPORAN HASIL PERANKINGAN' . $judulPeriode . '
+    </div>
+
+</div>
+';
 
 $mpdf->SetHTMLHeader($header);
-$mpdf->SetHTMLFooter($footer);
 
-// Query hasil perankingan
-$sql = "SELECT 
-            hasil.periode,
-            hasil.nilai_preferensi,
-            hasil.ranking,
-            alternatif.kode_alternatif,
-            alternatif.judul_film
-        FROM hasil
-        INNER JOIN alternatif ON hasil.alternatif_id = alternatif.id";
+$mpdf->SetHTMLFooter('
+<div style="border-top:1px solid #000; text-align:center; font-size:10px; padding-top:4px;">
+    Halaman {PAGENO} dari {nbpg}
+</div>
+');
+
+$sql = "
+    SELECT 
+        hasil.periode,
+        hasil.ranking,
+        hasil.nilai_preferensi,
+        alternatif.kode_alternatif,
+        alternatif.judul_film
+    FROM hasil
+    INNER JOIN alternatif ON hasil.alternatif_id = alternatif.id
+";
 
 if (!empty($filterPeriode)) {
-    $periode = $filterPeriode . '-01';
-    $sql .= " WHERE hasil.periode = '$periode'";
+    $sql .= " WHERE hasil.periode = '" . $filterPeriode . "-01'";
 }
 
 $sql .= " ORDER BY hasil.ranking ASC";
-
 $result = $conn->query($sql);
 
-// Content
 $html = '
 <style>
     body { font-family: Arial, sans-serif; }
     table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
+        width:100%;
+        border-collapse:collapse;
+        margin-top:8px;
     }
     th {
-        background-color: #C8DCFF;
-        border: 1px solid #000;
-        padding: 8px 5px;
-        font-size: 10px;
-        text-align: center;
+        background:#CFE2FF;
+        border:1px solid #000;
+        padding:7px;
+        font-size:11px;
+        text-align:center;
     }
     td {
-        border: 1px solid #000;
-        padding: 6px 4px;
-        font-size: 9px;
+        border:1px solid #000;
+        padding:6px;
+        font-size:10px;
     }
-    .text-center { text-align: center; }
-    .text-left { text-align: left; }
-    .no-data {
-        text-align: center;
-        font-style: italic;
-        color: #666;
-    }
-    .footer-info {
-        margin-top: 15px;
-        font-weight: bold;
-        font-size: 10px;
-    }
+    .center { text-align:center; }
+    .left { text-align:left; }
 </style>
 
 <table>
-    <thead>
-        <tr>
-            <th width="5%">Ranking</th>
-            <th width="15%">Kode Alternatif</th>
-            <th width="25%">Judul Film</th>
-            <th width="20%">Nilai Preferensi</th>
-            <th width="20%">Periode</th>
-        </tr>
-    </thead>
-    <tbody>';
+<thead>
+<tr>
+    <th width="7%">Ranking</th>
+    <th width="18%">Kode Alternatif</th>
+    <th width="35%">Judul Film</th>
+    <th width="20%">Nilai Preferensi</th>
+    <th width="20%">Periode</th>
+</tr>
+</thead>
+<tbody>
+';
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
 
         $ts = strtotime($row['periode']);
-        $periodeDisplay = $periodeBulan[date('n', $ts)] . ' ' . date('Y', $ts);
+        $periodeDisplay = $bulan[date('n', $ts)] . ' ' . date('Y', $ts);
 
         $html .= '
         <tr>
-            <td class="text-center">' . $row['ranking'] . '</td>
-            <td class="text-center">' . htmlspecialchars($row['kode_alternatif']) . '</td>
-            <td class="text-left">' . htmlspecialchars($row['judul_film']) . '</td>
-            <td class="text-center">' . number_format($row['nilai_preferensi'], 4) . '</td>
-            <td class="text-center">' . $periodeDisplay . '</td>
+            <td class="center">' . $row['ranking'] . '</td>
+            <td class="center">' . htmlspecialchars($row['kode_alternatif']) . '</td>
+            <td class="left">' . htmlspecialchars($row['judul_film']) . '</td>
+            <td class="center">' . number_format($row['nilai_preferensi'], 4) . '</td>
+            <td class="center">' . $periodeDisplay . '</td>
         </tr>';
     }
-
-    $totalData = $result->num_rows;
+    $total = $result->num_rows;
 } else {
     $html .= '
         <tr>
-            <td colspan="5" class="no-data">Tidak ada data hasil perankingan</td>
+            <td colspan="5" class="center">Tidak ada data hasil perankingan</td>
         </tr>';
-    $totalData = 0;
+    $total = 0;
 }
 
 $html .= '
-    </tbody>
+</tbody>
 </table>
 
-<div class="footer-info">
-    Total Data: ' . $totalData . ' alternatif
-</div>';
+<p style="margin-top:10px; font-size:11px; font-weight:bold;">
+    Total Data: ' . $total . ' alternatif
+</p>
+';
+
+$tanggalCetak = date('d') . ' ' . $bulan[date('n')] . ' ' . date('Y');
+
+$html .= '
+<div style="margin-top:45px; width:100%;">
+    <div style="width:40%; float:right; text-align:right; font-size:12px;">
+        <div>Jakarta, ' . $tanggalCetak . '</div>
+
+        <div style="height:80px;"></div>
+
+        <div style="font-weight:bold; text-decoration:underline;">
+            Inne Fadlianty
+        </div>
+        <div>Staff</div>
+    </div>
+</div>
+';
 
 $mpdf->WriteHTML($html);
 $conn->close();
 
-// Output PDF
-$mpdf->Output('Laporan_Hasil_Perankingan_' . date('Ymd_His') . '.pdf', 'I');
+$mpdf->Output(
+    'Laporan_Hasil_Perankingan_' . date('Ymd_His') . '.pdf',
+    'I'
+);
 exit;

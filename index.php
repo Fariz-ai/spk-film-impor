@@ -27,8 +27,24 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
             left: 0;
             height: 100vh;
             width: 260px;
-            background: linear-gradient(180deg, #007bff 0%, #0056b3 100%);
+            background: #ffffff;
             z-index: 1040;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar .nav-link {
+            color: #6c757d;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+            color: #ffffff;
         }
 
         .main-content {
@@ -40,6 +56,7 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
         .top-navbar {
             margin-left: 260px;
             height: 70px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
         }
 
         @media (max-width: 991.98px) {
@@ -85,51 +102,48 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <!-- Sidebar -->
-    <div class="sidebar shadow-lg overflow-auto" id="sidebar">
+    <div class="sidebar overflow-auto" id="sidebar">
         <!-- Logo -->
-        <div class="text-center py-4 border-bottom border-white">
-            <div class="bg-white rounded-circle d-inline-block p-2 mb-2">
-                <i class="fas fa-film text-primary" style="font-size: 2rem;"></i>
-            </div>
-            <h5 class="text-white mb-1 font-weight-bold">SPK Film Impor</h5>
-            <small class="text-white-50">Sistem Pendukung Keputusan</small>
+        <div class="text-center py-4 border-bottom">
+            <img src="assets/images/logo.png" alt="PRIMA Cinema Multimedia" class="img-fluid px-3 mb-2" style="max-width: 200px;">
+            <small class="text-muted d-block">Sistem Pendukung Keputusan</small>
         </div>
 
         <!-- Menu -->
         <ul class="nav flex-column py-3">
             <li class="nav-item">
-                <a class="nav-link text-white px-4 py-3" href="index.php">
+                <a class="nav-link px-4 py-3" href="index.php">
                     <i class="fas fa-home mr-3"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white px-4 py-3" href="?page=alternatif">
+                <a class="nav-link px-4 py-3" href="?page=alternatif">
                     <i class="fas fa-film mr-3"></i> Data Alternatif
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white px-4 py-3" href="?page=kriteria">
+                <a class="nav-link px-4 py-3" href="?page=kriteria">
                     <i class="fas fa-list mr-3"></i> Data Kriteria
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white px-4 py-3" href="?page=subkriteria">
+                <a class="nav-link px-4 py-3" href="?page=subkriteria">
                     <i class="fas fa-layer-group mr-3"></i> Data Sub-Kriteria
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white px-4 py-3" href="?page=penilaian">
+                <a class="nav-link px-4 py-3" href="?page=penilaian">
                     <i class="fas fa-calculator mr-3"></i> Penilaian
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white px-4 py-3" href="?page=hasil">
+                <a class="nav-link px-4 py-3" href="?page=hasil">
                     <i class="fas fa-chart-line mr-3"></i> Hasil Perankingan
                 </a>
             </li>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin') : ?>
                 <li class="nav-item">
-                    <a class="nav-link text-white px-4 py-3" href="?page=pengguna">
+                    <a class="nav-link px-4 py-3" href="?page=pengguna">
                         <i class="fas fa-users mr-3"></i> Data Pengguna
                     </a>
                 </li>
@@ -138,16 +152,16 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
     </div>
 
     <!-- Top Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top top-navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top top-navbar">
         <div class="container-fluid">
             <div class="d-flex align-items-center">
                 <!-- Toggle Button untuk Mobile -->
-                <button class="btn btn-link text-dark d-lg-none mr-2" id="sidebarToggle" type="button">
+                <button class="btn btn-link text-white d-lg-none mr-2" id="sidebarToggle" type="button">
                     <i class="fas fa-bars fa-lg"></i>
                 </button>
 
                 <!-- Page Title -->
-                <h4 class="mb-0 font-weight-bold text-dark">
+                <h4 class="mb-0 font-weight-bold text-white">
                     <?php
                     $page = $_GET['page'] ?? "";
 
@@ -173,9 +187,9 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
             <!-- Right Side -->
             <div class="d-flex align-items-center">
                 <!-- User Info -->
-                <div class="bg-light rounded-pill px-3 py-2 mr-3 d-none d-md-inline-block">
+                <div class="bg-white rounded-pill px-3 py-2 mr-3 d-none d-md-inline-block">
                     <i class="fas fa-user-circle text-primary"></i>
-                    <span class="ml-2 font-weight-medium"><?php echo $namaPengguna; ?></span>
+                    <span class="ml-2 font-weight-medium text-dark"><?php echo $namaPengguna; ?></span>
                 </div>
 
                 <!-- Logout Button -->
@@ -295,12 +309,12 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
 
             // Active menu
             var currentPage = "<?php echo $page; ?>";
-            $('.sidebar .nav-link').removeClass('active bg-white text-primary');
+            $('.sidebar .nav-link').removeClass('active');
 
             if (currentPage === "") {
-                $('.sidebar .nav-link[href="index.php"]').addClass('active bg-white text-primary');
+                $('.sidebar .nav-link[href="index.php"]').addClass('active');
             } else {
-                $('.sidebar .nav-link[href="?page=' + currentPage + '"]').addClass('active bg-white text-primary');
+                $('.sidebar .nav-link[href="?page=' + currentPage + '"]').addClass('active');
             }
 
             // Sidebar toggle
