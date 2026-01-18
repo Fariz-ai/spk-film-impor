@@ -17,7 +17,7 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
 
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/datatables.min.css">
-    <link rel="stylesheet" href="assets/css/all.css">
+    <link rel="stylesheet" href="assets/css/all.min.css">
     <link rel="stylesheet" href="assets/css/bootstrap-chosen.css">
 
     <style>
