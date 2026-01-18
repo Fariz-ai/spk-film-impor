@@ -1,74 +1,95 @@
-<div class="card">
-    <div class="card-header bg-primary text-white border-dark"><strong>Data Alternatif</strong></div>
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white border-dark">
+        <strong>Data Alternatif</strong>
+    </div>
+
     <div class="card-body">
-        <a href="?page=alternatif&action=tambah" class="btn btn-primary mb-2"><i class="fas fa-plus mr-2"></i>Tambah</a>
-        <?php
-        // Cek apakah ada data
-        $sql_count = "SELECT COUNT(*) as total FROM alternatif";
-        $result_count = $conn->query($sql_count);
-        $row_count = $result_count->fetch_assoc();
-        $ada_data = $row_count['total'] > 0;
-        ?>
-        <a href="alternatif/cetak.php" class="btn btn-<?php echo $ada_data ? 'success' : 'secondary'; ?> mb-2 <?php echo $ada_data ? '' : 'disabled'; ?>" <?php echo $ada_data ? '' : 'onclick="return false;"'; ?> target="_blank">
-            <i class="fas fa-print mr-2"></i>Cetak
-        </a>
-        <table class="table table-bordered" id="table">
-            <thead>
-                <tr>
-                    <th style="width: 5%;">No.</th>
-                    <th style="width: 15%;">Kode Alternatif</th>
-                    <th style="width: 25%;">Judul Film</th>
-                    <th style="width: 20%;">Periode Rilis</th>
-                    <th style="width: 15%;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $no = 1;
-                $sql = "SELECT * FROM alternatif ORDER BY dibuat_pada DESC";
-                $result = $conn->query($sql);
-                while ($row = $result->fetch_assoc()) {
-                ?>
+
+        <!-- Tombol Aksi -->
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="?page=alternatif&action=tambah" class="btn btn-primary btn-sm mr-1">
+                <i class="fas fa-plus mr-1"></i> Tambah
+            </a>
+
+            <?php
+            $sql_count = "SELECT COUNT(*) as total FROM alternatif";
+            $result_count = $conn->query($sql_count);
+            $row_count = $result_count->fetch_assoc();
+            $ada_data = $row_count['total'] > 0;
+            ?>
+
+            <a href="alternatif/cetak.php"
+                target="_blank"
+                class="btn btn-<?= $ada_data ? 'success' : 'secondary' ?> btn-sm <?= $ada_data ? '' : 'disabled' ?>"
+                <?= $ada_data ? '' : 'onclick="return false;"' ?>>
+                <i class="fas fa-print mr-1"></i> Cetak
+            </a>
+        </div>
+
+        <!-- Tabel -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle" id="table">
+                <thead class="table-light text-center">
                     <tr>
-                        <td align="center"><?php echo $no++; ?></td>
-                        <td align="center"><?php echo $row["kode_alternatif"]; ?></td>
-                        <td align="center"><?php echo $row["judul_film"]; ?></td>
-                        <td align="center">
-                            <?php
-                            $bulan = [
-                                1 => 'Januari',
-                                'Februari',
-                                'Maret',
-                                'April',
-                                'Mai',
-                                'Juni',
-                                'Juli',
-                                'Agustus',
-                                'September',
-                                'Oktober',
-                                'November',
-                                'Desember'
-                            ];
-                            $tanggal = date('d', strtotime($row["periode_rilis"]));
-                            $bulanAngka = date('n', strtotime($row["periode_rilis"]));
-                            $tahun = date('Y', strtotime($row["periode_rilis"]));
-                            echo "$tanggal {$bulan[$bulanAngka]} $tahun";
-                            ?>
-                        </td>
-                        <td align="center">
-                            <a class="btn btn-warning" href="?page=alternatif&action=edit&id=<?php echo $row['id']; ?>">
-                                Edit
-                            </a>
-                            <a onclick="return confirm('Apakah Anda yakin ingin menghapus data alternatif ini?')" class="btn btn-danger" href="?page=alternatif&action=hapus&id=<?php echo $row['id']; ?>">
-                                Hapus
-                            </a>
-                        </td>
+                        <th>No</th>
+                        <th>Kode Alternatif</th>
+                        <th>Judul Film</th>
+                        <th>Periode Rilis</th>
+                        <th>Aksi</th>
                     </tr>
-                <?php
-                }
-                $conn->close();
-                ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php
+                    $no = 1;
+                    $sql = "SELECT * FROM alternatif ORDER BY dibuat_pada DESC";
+                    $result = $conn->query($sql);
+
+                    $bulan = [
+                        1 => 'Januari',
+                        'Februari',
+                        'Maret',
+                        'April',
+                        'Mei',
+                        'Juni',
+                        'Juli',
+                        'Agustus',
+                        'September',
+                        'Oktober',
+                        'November',
+                        'Desember'
+                    ];
+
+                    while ($row = $result->fetch_assoc()) :
+                        $tanggal = date('d', strtotime($row["periode_rilis"]));
+                        $bulanAngka = date('n', strtotime($row["periode_rilis"]));
+                        $tahun = date('Y', strtotime($row["periode_rilis"]));
+                    ?>
+                        <tr>
+                            <td class="text-center"><?= $no++ ?></td>
+                            <td class="text-center text-nowrap"><?= $row["kode_alternatif"] ?></td>
+                            <td><?= $row["judul_film"] ?></td>
+                            <td class="text-center text-nowrap">
+                                <?= "$tanggal {$bulan[$bulanAngka]} $tahun" ?>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-inline-flex justify-content-center">
+                                    <a href="?page=alternatif&action=edit&id=<?= $row['id'] ?>"
+                                        class="btn btn-warning btn-sm mr-1">
+                                        Edit
+                                    </a>
+                                    <a href="?page=alternatif&action=hapus&id=<?= $row['id'] ?>"
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus data alternatif ini?')"
+                                        class="btn btn-danger btn-sm">
+                                        Hapus
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endwhile;
+                    $conn->close(); ?>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>

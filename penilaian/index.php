@@ -56,123 +56,128 @@ $periodeBulan = [
 ];
 ?>
 
-<div class="row">
-    <div class="col-sm-12">
-        <div class="card border-dark">
-            <div class="card-header bg-primary text-white border-dark">
-                <strong>Data Penilaian</strong>
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white border-dark">
+        <strong>Data Penilaian</strong>
+    </div>
+
+    <div class="card-body">
+
+        <!-- Tombol Aksi + Filter -->
+        <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
+
+            <!-- Tombol Kiri -->
+            <div class="d-flex flex-wrap gap-2">
+                <a href="?page=penilaian&action=tambah" class="btn btn-primary btn-sm mr-1">
+                    <i class="fas fa-plus mr-1"></i> Tambah
+                </a>
+
+                <?php
+                $cetakUrl = 'penilaian/cetak.php';
+                if (!empty($filterPeriode)) {
+                    $cetakUrl .= '?periode=' . $filterPeriode;
+                }
+                ?>
+
+                <a href="<?= $cetakUrl ?>"
+                    target="_blank"
+                    class="btn btn-<?= $ada_data ? 'success' : 'secondary' ?> btn-sm <?= $ada_data ? '' : 'disabled' ?>"
+                    <?= $ada_data ? '' : 'onclick="return false;"' ?>>
+                    <i class="fas fa-print mr-1"></i> Cetak
+                </a>
             </div>
-            <div class="card-body">
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <a href="?page=penilaian&action=tambah" class="btn btn-primary">
-                            <i class="fa fa-plus"></i> Tambah Data
-                        </a>
+            <!-- Filter Kanan -->
+            <form method="GET" class="d-flex flex-wrap align-items-center gap-2">
+                <input type="hidden" name="page" value="penilaian">
 
-                        <?php
-                        $cetakUrl = 'penilaian/cetak.php';
-                        if (!empty($filterPeriode)) {
-                            $cetakUrl .= '?periode=' . $filterPeriode;
-                        }
-                        ?>
-                        <a href="<?php echo $cetakUrl; ?>"
-                            class="btn btn-<?php echo $ada_data ? 'success' : 'secondary'; ?> <?php echo $ada_data ? '' : 'disabled'; ?>"
-                            <?php echo $ada_data ? '' : 'onclick="return false;"'; ?>
-                            target="_blank">
-                            <i class="fas fa-print"></i> Cetak
-                        </a>
-                    </div>
-                    <div class="col-md-6">
-                        <form method="GET" class="form-inline float-right">
-                            <input type="hidden" name="page" value="penilaian">
-                            <label class="mr-2">Filter Periode:</label>
-                            <select name="periode" class="form-control chosen" onchange="this.form.submit()">
-                                <option value="">Semua Periode</option>
+                <label class="mb-0 mr-1">Periode:</label>
+                <select name="periode" class="form-control form-control-sm chosen"
+                    onchange="this.form.submit()">
+                    <option value="">Semua</option>
 
-                                <?php
-                                // Reset pointer untuk select periode
-                                $resultPeriode->data_seek(0);
-                                while ($rowPeriode = $resultPeriode->fetch_assoc()):
-                                ?>
-                                    <?php
-                                    $timestamp = strtotime($rowPeriode['periode_format'] . '-01');
-                                    $bulan = (int) date('n', $timestamp);
-                                    $tahun = date('Y', $timestamp);
-                                    $periodeDisplay = $periodeBulan[$bulan] . ' ' . $tahun;
-                                    ?>
-                                    <option value="<?php echo $rowPeriode['periode_format']; ?>"
-                                        <?php echo ($filterPeriode == $rowPeriode['periode_format']) ? 'selected' : ''; ?>>
-                                        <?php echo $periodeDisplay; ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
+                    <?php
+                    $resultPeriode->data_seek(0);
+                    while ($rowPeriode = $resultPeriode->fetch_assoc()):
+                        $timestamp = strtotime($rowPeriode['periode_format'] . '-01');
+                        $bulan = (int) date('n', $timestamp);
+                        $tahun = date('Y', $timestamp);
+                        $periodeDisplay = $periodeBulan[$bulan] . ' ' . $tahun;
+                    ?>
+                        <option value="<?= $rowPeriode['periode_format'] ?>"
+                            <?= $filterPeriode == $rowPeriode['periode_format'] ? 'selected' : '' ?>>
+                            <?= $periodeDisplay ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
 
-                            <?php if (!empty($filterPeriode)): ?>
-                                <a href="?page=penilaian" class="btn btn-secondary ml-1">Reset</a>
-                            <?php endif; ?>
-                        </form>
-                    </div>
-                </div>
+                <?php if (!empty($filterPeriode)): ?>
+                    <a href="?page=penilaian" class="btn btn-secondary btn-sm">
+                        Reset
+                    </a>
+                <?php endif; ?>
+            </form>
 
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="dataTable">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>No.</th>
-                                <th>Periode</th>
-                                <th>Kode Alternatif</th>
-                                <th width="15%">Judul Film</th>
-                                <th>Kode Kriteria</th>
-                                <th width="15%">Nama Kriteria</th>
-                                <th>Nilai</th>
-                                <th width="15%">Keterangan</th>
-                                <th width="20%" class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $no = 1;
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-
-                                    $timestamp = strtotime($row['periode'] . '-01');
-                                    $bulan = (int) date('n', $timestamp);
-                                    $tahun = date('Y', $timestamp);
-                                    $periodeDisplay = $periodeBulan[$bulan] . ' ' . $tahun;
-                            ?>
-                                    <tr>
-                                        <td align="center"><?php echo $no++; ?></td>
-                                        <td><?php echo $periodeDisplay; ?></td>
-                                        <td><?php echo $row['kode_alternatif']; ?></td>
-                                        <td><?php echo $row['judul_film']; ?></td>
-                                        <td><?php echo $row['kode_kriteria']; ?></td>
-                                        <td><?php echo $row['nama_kriteria']; ?></td>
-                                        <td align="center"><?php echo $row['nilai']; ?></td>
-                                        <td><?php echo $row['keterangan']; ?></td>
-                                        <td align="center">
-                                            <a href="?page=penilaian&action=edit&id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">
-                                                Edit
-                                            </a>
-                                            <a href="?page=penilaian&action=hapus&id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Apakah Anda yakin ingin menghapus data penilaian ini?')">
-                                                Hapus
-                                            </a>
-                                        </td>
-                                    </tr>
-                                <?php
-                                }
-                            } else {
-                                ?>
-                                <tr>
-                                    <td colspan="9" class="text-center">Tidak ada data</td>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
         </div>
+
+        <!-- Tabel -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle" id="dataTable">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>No</th>
+                        <th>Periode</th>
+                        <th>Kode Alternatif</th>
+                        <th>Judul Film</th>
+                        <th>Kode Kriteria</th>
+                        <th>Nama Kriteria</th>
+                        <th>Nilai</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $no = 1;
+                    if ($result->num_rows > 0):
+                        while ($row = $result->fetch_assoc()):
+                            $timestamp = strtotime($row['periode'] . '-01');
+                            $bulan = (int) date('n', $timestamp);
+                            $tahun = date('Y', $timestamp);
+                            $periodeDisplay = $periodeBulan[$bulan] . ' ' . $tahun;
+                    ?>
+                            <tr>
+                                <td class="text-center"><?= $no++ ?></td>
+                                <td class="text-nowrap"><?= $periodeDisplay ?></td>
+                                <td class="text-center"><?= $row['kode_alternatif'] ?></td>
+                                <td><?= $row['judul_film'] ?></td>
+                                <td class="text-center"><?= $row['kode_kriteria'] ?></td>
+                                <td><?= $row['nama_kriteria'] ?></td>
+                                <td class="text-center"><?= $row['nilai'] ?></td>
+                                <td><?= $row['keterangan'] ?></td>
+                                <td class="text-center">
+                                    <div class="d-inline-flex justify-content-center">
+                                        <a href="?page=penilaian&action=edit&id=<?= $row['id'] ?>"
+                                            class="btn btn-warning btn-sm mr-1">
+                                            Edit
+                                        </a>
+                                        <a href="?page=penilaian&action=hapus&id=<?= $row['id'] ?>"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus data penilaian ini?')"
+                                            class="btn btn-danger btn-sm">
+                                            Hapus
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endwhile;
+                    else: ?>
+                        <tr>
+                            <td colspan="9" class="text-center">Tidak ada data</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>

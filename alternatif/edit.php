@@ -1,62 +1,73 @@
 <?php
+$error = '';
+
 if (isset($_POST['edit'])) {
     $kodeAlternatif = $_POST['kode_alternatif'];
     $judulFilm = $_POST['judul_film'];
     $periodeRilis = $_POST['periode_rilis'];
 
-    // Proses update data
-    $sql = "UPDATE alternatif SET kode_alternatif = '$kodeAlternatif', judul_film = '$judulFilm', periode_rilis = '$periodeRilis'
+    // Update data
+    $sql = "UPDATE alternatif 
+            SET judul_film = '$judulFilm',
+                periode_rilis = '$periodeRilis'
             WHERE kode_alternatif = '$kodeAlternatif'";
+
     if ($conn->query($sql) === TRUE) {
-        echo "<script>
-            window.location.href='?page=alternatif';
-          </script>";
+        echo "<script>window.location.href='?page=alternatif';</script>";
         exit();
     } else {
         $error = "Gagal Menyimpan! Terjadi kesalahan: " . $conn->error;
     }
 }
 
-// Mengambil data
+// Ambil data berdasarkan ID
 $id = $_GET['id'];
-
 $sql = "SELECT * FROM alternatif WHERE id = '$id'";
 $result = $conn->query($sql);
 $row = $result->fetch_assoc();
 ?>
 
-
-<!-- Pesan error -->
-<?php if (!empty($error)): ?>
-    <div class="alert alert-danger alert-dismissible fade show shadow">
+<!-- Alert Error -->
+<?php if (!empty($error)) : ?>
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <?= $error ?>
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <?php echo $error; ?>
     </div>
 <?php endif; ?>
 
 <!-- Form -->
-<div class="row">
-    <div class="col-sm-12">
-        <form action="" method="POST">
-            <div class="card border-dark">
-                <div class="card">
-                    <div class="card-header bg-primary text-white border-dark"><strong>Edit Data Alternatif</strong></div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Kode Alternatif</label>
-                            <input type="text" name="kode_alternatif" value="<?php echo $row['kode_alternatif'] ?>" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Judul Film</label>
-                            <input type="text" name="judul_film" value="<?php echo $row['judul_film'] ?>" maxlength="255" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Periode Rilis</label>
-                            <input type="date" name="periode_rilis" value="<?php echo $row['periode_rilis'] ?>" maxlength="255" class="form-control" required>
-                        </div>
-                        <input type="submit" value="Simpan" name="edit" class="btn btn-primary">
-                        <a href="?page=alternatif" class="btn btn-danger">Batal</a>
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+        <form method="POST">
+            <div class="card shadow-sm border-dark">
+                <div class="card-header bg-primary text-white text-center">
+                    <strong>Edit Data Alternatif</strong>
+                </div>
+
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Kode Alternatif</label>
+                        <input type="text" name="kode_alternatif" value="<?= htmlspecialchars($row['kode_alternatif']) ?>" class="form-control" readonly>
                     </div>
+
+                    <div class="form-group">
+                        <label>Judul Film</label>
+                        <input type="text" name="judul_film" value="<?= htmlspecialchars($row['judul_film']) ?>" maxlength="255" class="form-control" autocomplete="off" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Periode Rilis</label>
+                        <input type="date" name="periode_rilis" value="<?= $row['periode_rilis'] ?>" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light d-flex flex-wrap justify-content-between">
+                    <button type="submit" name="edit" class="btn btn-primary mb-2">
+                        Simpan Perubahan
+                    </button>
+                    <a href="?page=alternatif" class="btn btn-danger mb-2">
+                        Batal
+                    </a>
                 </div>
             </div>
         </form>

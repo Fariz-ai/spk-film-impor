@@ -44,93 +44,82 @@ if ($periodeTerbaru) {
 }
 ?>
 
-<div class="row mb-4">
-    <div class="col-xl-4 col-md-4 mb-3">
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
         <div class="card border-primary shadow-sm h-100">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <div class="text-uppercase text-primary font-weight-bold small mb-1">
-                            Total Alternatif
-                        </div>
-                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo $total_alternatif ?></div>
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-uppercase text-primary small fw-bold">
+                        Total Alternatif
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-film fa-2x text-muted"></i>
-                    </div>
+                    <div class="h4 fw-bold mb-0"><?= $total_alternatif ?></div>
                 </div>
+                <i class="fas fa-film fa-2x text-muted"></i>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-4 col-md-4 mb-3">
+    <div class="col-12 col-md-4">
         <div class="card border-success shadow-sm h-100">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <div class="text-uppercase text-success font-weight-bold small mb-1">
-                            Total Kriteria
-                        </div>
-                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo $total_kriteria ?></div>
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-uppercase text-success small fw-bold">
+                        Total Kriteria
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-list fa-2x text-muted"></i>
-                    </div>
+                    <div class="h4 fw-bold mb-0"><?= $total_kriteria ?></div>
                 </div>
+                <i class="fas fa-list fa-2x text-muted"></i>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-4 col-md-4 mb-3">
+    <div class="col-12 col-md-4">
         <div class="card border-info shadow-sm h-100">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <div class="text-uppercase text-info font-weight-bold small mb-1">
-                            Total Sub-Kriteria
-                        </div>
-                        <div class="h4 mb-0 font-weight-bold text-dark"><?php echo $total_subkriteria ?></div>
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-uppercase text-info small fw-bold">
+                        Total Sub-Kriteria
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-layer-group fa-2x text-muted"></i>
-                    </div>
+                    <div class="h4 fw-bold mb-0"><?= $total_subkriteria ?></div>
                 </div>
+                <i class="fas fa-layer-group fa-2x text-muted"></i>
             </div>
         </div>
     </div>
 </div>
-</div>
+
 
 <div class="row">
-    <div class="col-xl-12">
+    <div class="col-12">
         <div class="card shadow-sm border-dark">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-md-center">
                 <strong>Hasil Perankingan Terbaru</strong>
+
                 <?php if ($periodeTerbaru): ?>
-                    <span class="float-right">
-                        Periode: <?= $periodeBulan[(int)date('n', strtotime($periodeTerbaru))] . ' ' . date('Y', strtotime($periodeTerbaru)) ?>
+                    <span class="small mt-1 mt-md-0">
+                        Periode:
+                        <?= $periodeBulan[(int)date('n', strtotime($periodeTerbaru))] . ' ' . date('Y', strtotime($periodeTerbaru)) ?>
                     </span>
                 <?php endif; ?>
             </div>
+
             <div class="card-body">
 
                 <?php if (!empty($hasilRanking)) : ?>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead class="text-center bg-light">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-light text-center">
                                 <tr>
                                     <th>Ranking</th>
-                                    <th>Kode Alternatif</th>
+                                    <th>Kode</th>
                                     <th>Judul Film</th>
-                                    <th>Nilai Preferensi</th>
+                                    <th>Nilai</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($hasilRanking as $row) : ?>
                                     <tr>
-                                        <td class="text-center">
-                                            <?= $row['ranking'] ?>
-                                        </td>
+                                        <td class="text-center fw-bold"><?= $row['ranking'] ?></td>
                                         <td class="text-center"><?= $row['kode_alternatif'] ?></td>
                                         <td><?= $row['judul_film'] ?></td>
                                         <td class="text-center">
@@ -142,8 +131,8 @@ if ($periodeTerbaru) {
                         </table>
                     </div>
                 <?php else : ?>
-                    <div class="alert alert-warning text-center">
-                        Belum ada data hasil perankingan yang tersimpan.
+                    <div class="alert alert-warning text-center mb-0">
+                        Belum ada data hasil perankingan.
                     </div>
                 <?php endif; ?>
 

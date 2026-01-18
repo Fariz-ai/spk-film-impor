@@ -7,6 +7,20 @@ $minNilai = [];
 
 $filterPeriode = $_GET['periode'] ?? $_POST['periode'] ?? '';
 
+$ada_hasil = false;
+
+if (!empty($filterPeriode)) {
+    $qCek = $conn->query("
+        SELECT COUNT(*) AS total 
+        FROM hasil 
+        WHERE DATE_FORMAT(periode, '%Y-%m') = '$filterPeriode'
+    ");
+    if ($qCek) {
+        $c = $qCek->fetch_assoc();
+        $ada_hasil = $c['total'] > 0;
+    }
+}
+
 // Ambil periode
 $sqlPeriode = "SELECT DISTINCT DATE_FORMAT(periode, '%Y-%m') AS periode_format FROM penilaian ORDER BY periode DESC";
 $resultPeriode = $conn->query($sqlPeriode);
@@ -110,119 +124,123 @@ if (isset($_POST['simpan']) && !empty($preferensi)) {
 }
 ?>
 
-<div class="card">
-    <div class="card-header bg-primary text-white">
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white border-dark">
         <strong>Normalisasi & Hasil Perankingan</strong>
     </div>
+
     <div class="card-body">
 
         <?= $successAlert ?>
 
-        <form method="GET" class="form-inline mb-3">
+        <!-- Filter Periode -->
+        <form method="GET" class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <input type="hidden" name="page" value="hasil">
-            <label class="mr-2">Periode:</label>
-            <select name="periode" class="form-control" onchange="this.form.submit()">
+
+            <label class="mb-0 mr-1">Periode:</label>
+            <select name="periode" class="form-control form-control-sm w-auto chosen"
+                onchange="this.form.submit()">
                 <option value="">Pilih Periode</option>
-                <?php while ($p = $resultPeriode->fetch_assoc()) :
+                <?php while ($p = $resultPeriode->fetch_assoc()):
                     $ts = strtotime($p['periode_format'] . '-01');
                 ?>
-                    <option value="<?= $p['periode_format'] ?>"
-                        <?= $filterPeriode == $p['periode_format'] ? 'selected' : '' ?>>
-                        <?= $periodeBulan[date('n', $ts)] . ' ' . date('Y', $ts) ?>
+                    <option value="<?= $p['periode_format']; ?>"
+                        <?= $filterPeriode == $p['periode_format'] ? 'selected' : ''; ?>>
+                        <?= $periodeBulan[date('n', $ts)] . ' ' . date('Y', $ts); ?>
                     </option>
                 <?php endwhile; ?>
             </select>
         </form>
 
-        <h5>Normaliasi Data</h5>
-        <table class="table table-bordered">
-            <thead class="text-center">
-                <tr>
-                    <th>No</th>
-                    <th>Kode</th>
-                    <th>Film</th>
-                    <th>Kriteria</th>
-                    <th>Nilai</th>
-                    <th>Normalisasi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($data)) :
-                    $no = 1;
-                    foreach ($data as $row) :
-                        $k = $row['kode_kriteria'];
-                        $n = $row['nilai'];
-                        $norm = ($row['jenis'] === 'Benefit')
-                            ? $n / $maxNilai[$k]
-                            : $minNilai[$k] / $n;
-                ?>
-                        <tr>
-                            <td class="text-center"><?= $no++ ?></td>
-                            <td><?= $row['kode_alternatif'] ?></td>
-                            <td><?= $row['judul_film'] ?></td>
-                            <td class="text-center"><?= $k ?></td>
-                            <td class="text-center"><?= $n ?></td>
-                            <td class="text-center"><?= number_format($norm, 3) ?></td>
-                        </tr>
-                    <?php endforeach;
-                else : ?>
+        <!-- Tabel Normalisasi -->
+        <h5 class="mt-3">Normalisasi Data</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light text-center">
                     <tr>
-                        <td colspan="6" class="text-center">Pilih periode</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-
-        <?php
-        // Cek apakah ada data hasil untuk periode terpilih
-        $ada_hasil = false;
-        if (!empty($filterPeriode)) {
-            $periodeCetak = $filterPeriode . '-01';
-            $qCek = $conn->query("SELECT COUNT(*) AS total FROM hasil WHERE periode='$periodeCetak'");
-            $c = $qCek->fetch_assoc();
-            $ada_hasil = $c['total'] > 0;
-        }
-        ?>
-
-        <?php if (!empty($preferensi)) : ?>
-            <h5>Hasil Perankingan</h5>
-            <table class="table table-bordered">
-                <thead class="text-center">
-                    <tr>
-                        <th>Ranking</th>
+                        <th>No</th>
                         <th>Kode</th>
+                        <th>Film</th>
+                        <th>Kriteria</th>
                         <th>Nilai</th>
+                        <th>Normalisasi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $r = 1;
-                    foreach ($preferensi as $k => $v) : ?>
+                    <?php if (!empty($data)):
+                        $no = 1;
+                        foreach ($data as $row):
+                            $k = $row['kode_kriteria'];
+                            $n = $row['nilai'];
+                            $norm = ($row['jenis'] === 'Benefit')
+                                ? $n / $maxNilai[$k]
+                                : $minNilai[$k] / $n;
+                    ?>
+                            <tr>
+                                <td class="text-center"><?= $no++ ?></td>
+                                <td class="text-center"><?= $row['kode_alternatif'] ?></td>
+                                <td><?= $row['judul_film'] ?></td>
+                                <td class="text-center"><?= $k ?></td>
+                                <td class="text-center"><?= $n ?></td>
+                                <td class="text-center"><?= number_format($norm, 3) ?></td>
+                            </tr>
+                        <?php endforeach;
+                    else: ?>
                         <tr>
-                            <td class="text-center"><?= $r++ ?></td>
-                            <td class="text-center"><?= $k ?></td>
-                            <td class="text-center"><?= number_format($v, 4) ?></td>
+                            <td colspan="6" class="text-center text-muted">
+                                Pilih periode untuk menampilkan data
+                            </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
+        </div>
 
-            <div class="mt-3">
+        <!-- Hasil Ranking -->
+        <?php if (!empty($preferensi)): ?>
+            <h5 class="mt-4">Hasil Perankingan</h5>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>Ranking</th>
+                            <th>Kode Alternatif</th>
+                            <th>Nilai Preferensi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $r = 1;
+                        foreach ($preferensi as $k => $v): ?>
+                            <tr>
+                                <td class="text-center"><?= $r++ ?></td>
+                                <td class="text-center"><?= $k ?></td>
+                                <td class="text-center"><?= number_format($v, 4) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="d-flex flex-wrap gap-2 mt-3">
+
                 <form method="POST" class="d-inline">
+                    <input type="hidden" name="page" value="hasil">
                     <input type="hidden" name="periode" value="<?= $filterPeriode ?>">
-                    <button type="submit" name="simpan" class="btn btn-primary">
+                    <button type="submit" name="simpan" class="btn btn-primary btn-sm mr-1">
                         Simpan Hasil
                     </button>
                 </form>
 
                 <a href="hasil/cetak.php?periode=<?= $filterPeriode ?>"
-                    class="btn btn-<?= $ada_hasil ? 'success' : 'secondary' ?> ml-2 <?= $ada_hasil ? '' : 'disabled' ?>"
-                    <?= $ada_hasil ? '' : 'onclick="return false;"' ?>
-                    target="_blank">
-                    <i class="fas fa-print mr-2"></i>Cetak
+                    target="_blank"
+                    class="btn btn-<?= $ada_hasil ? 'success' : 'secondary' ?> btn-sm <?= $ada_hasil ? '' : 'disabled' ?>"
+                    <?= $ada_hasil ? '' : 'onclick="return false;"' ?>>
+                    <i class="fas fa-print mr-1"></i> Cetak
                 </a>
 
             </div>
-
         <?php endif; ?>
 
     </div>
