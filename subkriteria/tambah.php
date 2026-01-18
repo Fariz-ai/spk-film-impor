@@ -77,7 +77,7 @@ $resultKriteria = $conn->query($sqlKriteria);
 
                     <div class="form-group">
                         <label>Keterangan</label>
-                        <input type="text" name="keterangan" class="form-control" placeholder="Masukkan keterangan" required>
+                        <input type="text" name="keterangan" class="form-control" placeholder="Masukkan keterangan" autocomplete="off" required>
                     </div>
 
                 </div>

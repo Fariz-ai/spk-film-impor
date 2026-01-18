@@ -63,12 +63,12 @@ if (isset($_POST['edit'])) {
 
                     <div class="form-group">
                         <label>Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" class="form-control" maxlength="100" value="<?= htmlspecialchars($row['nama_lengkap']); ?>" required>
+                        <input type="text" name="nama_lengkap" class="form-control" maxlength="100" value="<?= htmlspecialchars($row['nama_lengkap']); ?>" autocomplete="off" required>
                     </div>
 
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" class="form-control" maxlength="100" value="<?= htmlspecialchars($row['email']); ?>" required>
+                        <input type="email" name="email" class="form-control" maxlength="100" value="<?= htmlspecialchars($row['email']); ?>" autocomplete="off" required>
                     </div>
 
                     <div class="form-group">

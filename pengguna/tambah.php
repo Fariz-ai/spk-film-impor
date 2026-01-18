@@ -51,12 +51,12 @@ if (isset($_POST['simpan'])) {
 
                     <div class="form-group">
                         <label>Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" class="form-control" maxlength="100" placeholder="Masukkan nama lengkap" required>
+                        <input type="text" name="nama_lengkap" class="form-control" maxlength="100" placeholder="Masukkan nama lengkap" autocomplete="off" required>
                     </div>
 
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" class="form-control" maxlength="100" placeholder="Masukkan email" required>
+                        <input type="email" name="email" class="form-control" maxlength="100" placeholder="Masukkan email" autocomplete="off" required>
                     </div>
 
                     <div class="form-group">

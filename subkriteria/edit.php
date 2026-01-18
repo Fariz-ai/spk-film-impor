@@ -90,7 +90,7 @@ if (isset($_POST['edit'])) {
 
                     <div class="form-group">
                         <label>Keterangan</label>
-                        <input type="text" name="keterangan" class="form-control" value="<?= htmlspecialchars($row['keterangan']); ?>" required>
+                        <input type="text" name="keterangan" class="form-control" value="<?= htmlspecialchars($row['keterangan']); ?>" autocomplete="off" required>
                     </div>
 
                 </div>

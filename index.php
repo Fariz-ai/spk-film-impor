@@ -16,7 +16,7 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
     <title>SPK Film Impor</title>
 
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/datatables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="assets/css/all.min.css">
     <link rel="stylesheet" href="assets/css/bootstrap-chosen.css">
 
@@ -295,14 +295,15 @@ $namaPengguna = $_SESSION['nama_lengkap'] ?? '';
     <script src="assets/js/jquery-3.7.0.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/all.js"></script>
-    <script src="assets/js/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
         $(document).ready(function() {
             // DataTables
             $('#table').DataTable({
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
                 },
                 "responsive": true
             });
