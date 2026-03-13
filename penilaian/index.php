@@ -32,7 +32,7 @@ if (!empty($filterPeriode)) {
 }
 
 $sql .= $where;
-$sql .= " ORDER BY penilaian.periode DESC, alternatif.kode_alternatif ASC, kriteria.kode_kriteria ASC";
+$sql .= " ORDER BY penilaian.periode DESC, alternatif.dibuat_pada DESC, kriteria.kode_kriteria ASC";
 
 // Hitung total data untuk pagination
 $sql_total = "SELECT COUNT(*) as total 

@@ -32,12 +32,12 @@ if (isset($_POST['simpan'])) {
 
 // Ambil data alternatif
 $sqlAlternatif = "SELECT id, kode_alternatif, judul_film
-                  FROM alternatif ORDER BY kode_alternatif ASC";
+                  FROM alternatif ORDER BY dibuat_pada DESC";
 $resultAlternatif = $conn->query($sqlAlternatif);
 
 // Ambil data kriteria
 $sqlKriteria = "SELECT id, kode_kriteria, nama_kriteria
-                FROM kriteria ORDER BY kode_kriteria ASC";
+                FROM kriteria ORDER BY dibuat_pada DESC";
 $resultKriteria = $conn->query($sqlKriteria);
 ?>
 

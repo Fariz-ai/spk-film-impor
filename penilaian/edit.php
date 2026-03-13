@@ -43,12 +43,12 @@ $row = $result->fetch_assoc();
 
 // Alternatif
 $sqlAlternatif = "SELECT id, kode_alternatif, judul_film
-                  FROM alternatif ORDER BY kode_alternatif ASC";
+                  FROM alternatif ORDER BY dibuat_pada DESC";
 $resultAlternatif = $conn->query($sqlAlternatif);
 
 // Kriteria
 $sqlKriteria = "SELECT id, kode_kriteria, nama_kriteria
-                FROM kriteria ORDER BY kode_kriteria ASC";
+                FROM kriteria ORDER BY dibuat_pada DESC";
 $resultKriteria = $conn->query($sqlKriteria);
 
 // Sub-kriteria sesuai kriteria
@@ -146,6 +146,5 @@ $resultSubKriteria = $conn->query($sqlSubKriteria);
 
             </div>
         </form>
-
     </div>
 </div>
