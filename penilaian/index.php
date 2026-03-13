@@ -2,6 +2,12 @@
 // Filter periode
 $filterPeriode = isset($_GET['periode']) ? $_GET['periode'] : '';
 
+// Pagination
+$perPage = 10;
+$currentPage = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
+if ($currentPage < 1) $currentPage = 1;
+$offset = ($currentPage - 1) * $perPage;
+
 // Query data penilaian
 $sql = "SELECT 
             penilaian.id,
@@ -20,21 +26,32 @@ $sql = "SELECT
         INNER JOIN kriteria ON penilaian.kriteria_id = kriteria.id
         INNER JOIN sub_kriteria ON penilaian.sub_kriteria_id = sub_kriteria.id";
 
+$where = "";
 if (!empty($filterPeriode)) {
-    $sql .= " WHERE DATE_FORMAT(penilaian.periode, '%Y-%m') = '$filterPeriode'";
+    $where .= " WHERE DATE_FORMAT(penilaian.periode, '%Y-%m') = '$filterPeriode'";
 }
 
+$sql .= $where;
 $sql .= " ORDER BY penilaian.periode DESC, alternatif.kode_alternatif ASC, kriteria.kode_kriteria ASC";
+
+// Hitung total data untuk pagination
+$sql_total = "SELECT COUNT(*) as total 
+              FROM penilaian
+              INNER JOIN alternatif ON penilaian.alternatif_id = alternatif.id
+              INNER JOIN kriteria ON penilaian.kriteria_id = kriteria.id
+              INNER JOIN sub_kriteria ON penilaian.sub_kriteria_id = sub_kriteria.id"
+    . $where;
+$result_total = $conn->query($sql_total);
+$row_total = $result_total->fetch_assoc();
+$totalData = $row_total['total'];
+$totalPage = ceil($totalData / $perPage);
+
+// Ambil data sesuai halaman
+$sql .= " LIMIT $perPage OFFSET $offset";
 $result = $conn->query($sql);
 
-// Cek apakah ada data penilaian
-$sql_count = "SELECT COUNT(*) as total FROM penilaian";
-if (!empty($filterPeriode)) {
-    $sql_count .= " WHERE DATE_FORMAT(periode, '%Y-%m') = '$filterPeriode'";
-}
-$result_count = $conn->query($sql_count);
-$row_count = $result_count->fetch_assoc();
-$ada_data = $row_count['total'] > 0;
+// Cek apakah ada data penilaian (untuk tombol cetak)
+$ada_data = $totalData > 0;
 
 // Query periode
 $sqlPeriode = "SELECT DISTINCT DATE_FORMAT(periode, '%Y-%m') AS periode_format FROM penilaian ORDER BY periode DESC";
@@ -54,6 +71,16 @@ $periodeBulan = [
     11 => 'November',
     12 => 'Desember'
 ];
+
+// Helper: bangun query string untuk link pagination
+function buildPaginationUrl($page, $filterPeriode)
+{
+    $params = ['page' => 'penilaian', 'halaman' => $page];
+    if (!empty($filterPeriode)) {
+        $params['periode'] = $filterPeriode;
+    }
+    return '?' . http_build_query($params);
+}
 ?>
 
 <div class="card shadow-sm">
@@ -120,6 +147,13 @@ $periodeBulan = [
 
         </div>
 
+        <!-- Info jumlah data -->
+        <?php if ($totalData > 0): ?>
+            <div class="mb-2 text-muted small">
+                Menampilkan <?= $offset + 1 ?>–<?= min($offset + $perPage, $totalData) ?> dari <?= $totalData ?> data
+            </div>
+        <?php endif; ?>
+
         <!-- Tabel -->
         <div class="table-responsive">
             <table class="table table-bordered table-hover align-middle" id="dataTable">
@@ -138,7 +172,7 @@ $periodeBulan = [
                 </thead>
                 <tbody>
                     <?php
-                    $no = 1;
+                    $no = $offset + 1;
                     if ($result->num_rows > 0):
                         while ($row = $result->fetch_assoc()):
                             $timestamp = strtotime($row['periode'] . '-01');
@@ -178,6 +212,57 @@ $periodeBulan = [
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination -->
+        <?php if ($totalPage > 1): ?>
+            <div class="d-flex justify-content-center mt-3">
+                <nav aria-label="Navigasi halaman">
+                    <ul class="pagination pagination-sm mb-0">
+
+                        <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
+                            <a class="page-link" href="<?= buildPaginationUrl($currentPage - 1, $filterPeriode) ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <?php
+                        $startPage = max(1, $currentPage - 2);
+                        $endPage   = min($totalPage, $currentPage + 2);
+
+                        if ($startPage > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="<?= buildPaginationUrl(1, $filterPeriode) ?>">1</a>
+                            </li>
+                            <?php if ($startPage > 2): ?>
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
+                            <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                                <a class="page-link" href="<?= buildPaginationUrl($i, $filterPeriode) ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <?php if ($endPage < $totalPage): ?>
+                            <?php if ($endPage < $totalPage - 1): ?>
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <?php endif; ?>
+                            <li class="page-item">
+                                <a class="page-link" href="<?= buildPaginationUrl($totalPage, $filterPeriode) ?>"><?= $totalPage ?></a>
+                            </li>
+                        <?php endif; ?>
+
+                        <li class="page-item <?= $currentPage >= $totalPage ? 'disabled' : '' ?>">
+                            <a class="page-link" href="<?= buildPaginationUrl($currentPage + 1, $filterPeriode) ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        <?php endif; ?>
 
     </div>
 </div>
