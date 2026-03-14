@@ -13,7 +13,7 @@ if (!empty($filterPeriode)) {
     $qCek = $conn->query("
         SELECT COUNT(*) AS total 
         FROM hasil 
-        WHERE DATE_FORMAT(periode, '%Y-%m') = '$filterPeriode'
+        WHERE DATE_FORMAT(periode_rilis, '%Y-%m') = '$filterPeriode'
     ");
     if ($qCek) {
         $c = $qCek->fetch_assoc();
@@ -110,7 +110,7 @@ if (isset($_POST['simpan']) && !empty($preferensi)) {
         $alt = $qAlt->fetch_assoc();
 
         if ($alt) {
-            $conn->query("INSERT INTO hasil (periode, alternatif_id, nilai_preferensi, ranking)
+            $conn->query("INSERT INTO hasil (periode_rilis, alternatif_id, nilai_preferensi, ranking)
             VALUES ('$periode', '{$alt['id']}', '$nilai', '$rank')");
             $rank++;
         }

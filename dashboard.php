@@ -13,7 +13,7 @@ $query_subkriteria = mysqli_query($conn, "SELECT COUNT(*) as total FROM sub_krit
 $total_subkriteria = mysqli_fetch_assoc($query_subkriteria)['total'];
 
 // Query untuk periode terbaru dari tabel hasil
-$queryPeriodeTerbaru = mysqli_query($conn, "SELECT MAX(periode) AS periode_terbaru FROM hasil");
+$queryPeriodeTerbaru = mysqli_query($conn, "SELECT MAX(periode_rilis) AS periode_terbaru FROM hasil");
 $periodeTerbaru = mysqli_fetch_assoc($queryPeriodeTerbaru)['periode_terbaru'];
 
 $periodeBulan = [
@@ -36,7 +36,7 @@ $periodeBulan = [
 $hasilRanking = [];
 if ($periodeTerbaru) {
     $queryHasil = mysqli_query($conn, "SELECT hasil.ranking, alternatif.kode_alternatif, alternatif.judul_film, hasil.nilai_preferensi
-                                    FROM hasil JOIN alternatif ON hasil.alternatif_id = alternatif.id WHERE hasil.periode = '$periodeTerbaru'
+                                    FROM hasil JOIN alternatif ON hasil.alternatif_id = alternatif.id WHERE hasil.periode_rilis = '$periodeTerbaru'
                                     ORDER BY hasil.ranking ASC");
     while ($row = mysqli_fetch_assoc($queryHasil)) {
         $hasilRanking[] = $row;

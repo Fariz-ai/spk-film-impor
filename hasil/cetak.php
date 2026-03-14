@@ -66,17 +66,17 @@ $mpdf->SetHTMLFooter('
 
 $sql = "
     SELECT 
-        hasil.periode,
         hasil.ranking,
         hasil.nilai_preferensi,
         alternatif.kode_alternatif,
-        alternatif.judul_film
+        alternatif.judul_film,
+        alternatif.periode_rilis AS tanggal_rilis
     FROM hasil
     INNER JOIN alternatif ON hasil.alternatif_id = alternatif.id
 ";
 
 if (!empty($filterPeriode)) {
-    $sql .= " WHERE hasil.periode = '" . $filterPeriode . "-01'";
+    $sql .= " WHERE hasil.periode_rilis = '" . $filterPeriode . "-01'";
 }
 
 $sql .= " ORDER BY hasil.ranking ASC";
@@ -109,11 +109,11 @@ $html = '
 <table>
 <thead>
 <tr>
-    <th width="7%">Ranking</th>
+    <th width="10%">Ranking</th>
     <th width="18%">Kode Alternatif</th>
     <th width="35%">Judul Film</th>
     <th width="20%">Nilai Preferensi</th>
-    <th width="20%">Periode</th>
+    <th width="20%">Periode Rilis</th>
 </tr>
 </thead>
 <tbody>
@@ -122,17 +122,17 @@ $html = '
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
 
-        $ts = strtotime($row['periode']);
-        $periodeDisplay = $bulan[date('n', $ts)] . ' ' . date('Y', $ts);
+        $ts = strtotime($row['tanggal_rilis']);
+        $periodeDisplay = date('d', $ts) . ' ' . $bulan[date('n', $ts)] . ' ' . date('Y', $ts);
 
         $html .= '
-        <tr>
-            <td class="center">' . $row['ranking'] . '</td>
-            <td class="center">' . htmlspecialchars($row['kode_alternatif']) . '</td>
-            <td class="left">' . htmlspecialchars($row['judul_film']) . '</td>
-            <td class="center">' . number_format($row['nilai_preferensi'], 4) . '</td>
-            <td class="center">' . $periodeDisplay . '</td>
-        </tr>';
+    <tr>
+        <td class="center">' . $row['ranking'] . '</td>
+        <td class="center">' . htmlspecialchars($row['kode_alternatif']) . '</td>
+        <td class="left">' . htmlspecialchars($row['judul_film']) . '</td>
+        <td class="center">' . number_format($row['nilai_preferensi'], 4) . '</td>
+        <td class="center">' . $periodeDisplay . '</td>
+    </tr>';
     }
     $total = $result->num_rows;
 } else {
