@@ -101,7 +101,7 @@ if (isset($_POST['simpan']) && !empty($preferensi)) {
 
     $periode = $filterPeriode . '-01';
 
-    $conn->query("DELETE FROM hasil WHERE periode='$periode'");
+    $conn->query("DELETE FROM hasil WHERE periode_rilis='$periode'");
 
     $rank = 1;
     foreach ($preferensi as $kodeAlt => $nilai) {
