@@ -62,7 +62,7 @@ if (!empty($filterPeriode)) {
         JOIN kriteria ON penilaian.kriteria_id = kriteria.id
         JOIN sub_kriteria ON penilaian.sub_kriteria_id = sub_kriteria.id
         WHERE DATE_FORMAT(penilaian.periode, '%Y-%m') = '$filterPeriode'
-        ORDER BY alternatif.kode_alternatif, kriteria.kode_kriteria";
+        ORDER BY alternatif.dibuat_pada ASC, kriteria.kode_kriteria ASC";
 
     $result = $conn->query($sql);
 
