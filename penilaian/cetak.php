@@ -83,7 +83,7 @@ if (!empty($filterPeriode)) {
     $sql .= " WHERE DATE_FORMAT(penilaian.periode, '%Y-%m') = '$filterPeriode'";
 }
 
-$sql .= " ORDER BY penilaian.periode DESC, alternatif.dibuat_pada DESC, kriteria.kode_kriteria ASC";
+$sql .= " ORDER BY penilaian.periode ASC, alternatif.dibuat_pada ASC, kriteria.kode_kriteria ASC";
 $result = $conn->query($sql);
 
 $html = '

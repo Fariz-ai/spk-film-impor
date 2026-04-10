@@ -46,7 +46,7 @@ $mpdf->SetHTMLFooter('
 </div>
 ');
 
-$sql = "SELECT * FROM alternatif ORDER BY dibuat_pada DESC";
+$sql = "SELECT * FROM alternatif ORDER BY dibuat_pada ASC";
 $result = $conn->query($sql);
 
 $bulan = [
