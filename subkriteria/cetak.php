@@ -58,20 +58,14 @@ $sql = "
 ";
 $result = $conn->query($sql);
 
-$bulan = [
-    1 => 'Januari',
-    'Februari',
-    'Maret',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember'
-];
+$formatter = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'EEEE, dd MMMM yyyy'
+);
 
 $html = '
 <style>
@@ -141,12 +135,12 @@ $html .= '
 </p>
 ';
 
-$tanggalCetak = date('d') . ' ' . $bulan[date('n')] . ' ' . date('Y');
+$tanggalCetak = $formatter->format(time());
 
 $html .= '
 <div style="margin-top:45px; width:100%;">
     <div style="width:40%; float:right; text-align:right; font-size:12px;">
-        <div>Jakarta, ' . $tanggalCetak . '</div>
+        <div>Jakarta<br/> ' . $tanggalCetak . '</div>
 
         <div style="height:80px;"></div>
 

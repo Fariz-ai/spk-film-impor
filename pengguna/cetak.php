@@ -12,20 +12,14 @@ $mpdf = new \Mpdf\Mpdf([
     'margin_bottom' => 35
 ]);
 
-$bulan = [
-    1 => 'Januari',
-    'Februari',
-    'Maret',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember'
-];
+$formatter = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'EEEE, dd MMMM yyyy'
+);
 
 $logoPath = __DIR__ . '/../assets/images/logo.png';
 
@@ -106,10 +100,8 @@ if ($result->num_rows > 0) {
     $no = 1;
     while ($row = $result->fetch_assoc()) {
 
-        $tgl = strtotime($row['dibuat_pada']);
-        $tglDisplay = date('d', $tgl) . ' ' .
-            $bulan[date('n', $tgl)] . ' ' .
-            date('Y', $tgl);
+        $timestamp = strtotime($row['dibuat_pada']);
+        $tanggalDisplay = $formatter->format($timestamp);
 
         $html .= '
         <tr>
@@ -117,7 +109,7 @@ if ($result->num_rows > 0) {
             <td class="left">' . htmlspecialchars($row['nama_lengkap']) . '</td>
             <td class="left">' . htmlspecialchars($row['email']) . '</td>
             <td class="center">' . htmlspecialchars($row['role']) . '</td>
-            <td class="center">' . $tglDisplay . '</td>
+            <td class="center">' . $tanggalDisplay . '</td>
         </tr>';
     }
     $total = $result->num_rows;
@@ -138,12 +130,12 @@ $html .= '
 </p>
 ';
 
-$tanggalCetak = date('d') . ' ' . $bulan[date('n')] . ' ' . date('Y');
+$tanggalCetak = $formatter->format(time());
 
 $html .= '
 <div style="margin-top:45px; width:100%;">
     <div style="width:40%; float:right; text-align:right; font-size:12px;">
-        <div>Jakarta, ' . $tanggalCetak . '</div>
+        <div>Jakarta<br/> ' . $tanggalCetak . '</div>
 
         <div style="height:80px;"></div>
 

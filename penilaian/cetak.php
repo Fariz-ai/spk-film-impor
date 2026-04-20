@@ -14,25 +14,28 @@ $mpdf = new \Mpdf\Mpdf([
     'margin_bottom' => 35
 ]);
 
-$bulan = [
-    1 => 'Januari',
-    'Februari',
-    'Maret',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember'
-];
+$formatterFull = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'EEEE, dd MMMM yyyy'
+);
+
+$formatterBulan = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::NONE,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'MMMM yyyy'
+);
 
 $judulPeriode = '';
 if (!empty($filterPeriode)) {
     $ts = strtotime($filterPeriode . '-01');
-    $judulPeriode = ' - ' . $bulan[date('n', $ts)] . ' ' . date('Y', $ts);
+    $judulPeriode = ' - ' . $formatterBulan->format($ts);
 }
 
 $logoPath = __DIR__ . '/../assets/images/logo.png';
@@ -132,7 +135,7 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
 
         $ts = strtotime($row['periode'] . '-01');
-        $periodeDisplay = $bulan[date('n', $ts)] . ' ' . date('Y', $ts);
+        $periodeDisplay = $formatterBulan->format($ts);
 
         $html .= '
         <tr>
@@ -164,12 +167,12 @@ $html .= '
 </p>
 ';
 
-$tanggalCetak = date('d') . ' ' . $bulan[date('n')] . ' ' . date('Y');
+$tanggalCetak = $formatterFull->format(time());
 
 $html .= '
 <div style="margin-top:45px; width:100%;">
     <div style="width:40%; float:right; text-align:right; font-size:12px;">
-        <div>Jakarta, ' . $tanggalCetak . '</div>
+        <div>Jakarta<br/> ' . $tanggalCetak . '</div>
 
         <div style="height:80px;"></div>
 

@@ -14,32 +14,34 @@ $mpdf = new \Mpdf\Mpdf([
     'margin_bottom' => 35
 ]);
 
-$bulan = [
-    1 => 'Januari',
-    'Februari',
-    'Maret',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember'
-];
+$formatterFull = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'EEEE, dd MMMM yyyy'
+);
+
+$formatterBulan = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::NONE,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'MMMM yyyy'
+);
 
 $judulPeriode = '';
 if (!empty($filterPeriode)) {
     $ts = strtotime($filterPeriode . '-01');
-    $judulPeriode = ' - ' . $bulan[date('n', $ts)] . ' ' . date('Y', $ts);
+    $judulPeriode = ' - ' . $formatterBulan->format($ts);
 }
 
 $logoPath = __DIR__ . '/../assets/images/logo.png';
 
 $header = '
 <div style="padding:5px 10px 0 10px;">
-
     <div style="text-align:center;">
         <img src="' . $logoPath . '" width="120">
     </div>
@@ -52,7 +54,6 @@ $header = '
     <div style="text-align:center; font-size:14px; font-weight:bold; margin-top:6px;">
         LAPORAN HASIL PERANKINGAN' . $judulPeriode . '
     </div>
-
 </div>
 ';
 
@@ -112,7 +113,7 @@ $html = '
     <th width="10%">Ranking</th>
     <th width="18%">Kode Alternatif</th>
     <th width="35%">Judul Film</th>
-    <th width="20%">Nilai Preferensi</th>
+    <th width="17%">Nilai Preferensi</th>
     <th width="20%">Periode Rilis</th>
 </tr>
 </thead>
@@ -123,16 +124,16 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
 
         $ts = strtotime($row['tanggal_rilis']);
-        $periodeDisplay = date('d', $ts) . ' ' . $bulan[date('n', $ts)] . ' ' . date('Y', $ts);
+        $tanggalRilis = $formatterFull->format($ts);
 
         $html .= '
-    <tr>
-        <td class="center">' . $row['ranking'] . '</td>
-        <td class="center">' . htmlspecialchars($row['kode_alternatif']) . '</td>
-        <td class="left">' . htmlspecialchars($row['judul_film']) . '</td>
-        <td class="center">' . number_format($row['nilai_preferensi'], 4) . '</td>
-        <td class="center">' . $periodeDisplay . '</td>
-    </tr>';
+        <tr>
+            <td class="center">' . $row['ranking'] . '</td>
+            <td class="center">' . htmlspecialchars($row['kode_alternatif']) . '</td>
+            <td class="left">' . htmlspecialchars($row['judul_film']) . '</td>
+            <td class="center">' . number_format($row['nilai_preferensi'], 4) . '</td>
+            <td class="center">' . $tanggalRilis . '</td>
+        </tr>';
     }
     $total = $result->num_rows;
 } else {
@@ -152,12 +153,12 @@ $html .= '
 </p>
 ';
 
-$tanggalCetak = date('d') . ' ' . $bulan[date('n')] . ' ' . date('Y');
+$tanggalCetak = $formatterFull->format(time());
 
 $html .= '
 <div style="margin-top:45px; width:100%;">
     <div style="width:40%; float:right; text-align:right; font-size:12px;">
-        <div>Jakarta, ' . $tanggalCetak . '</div>
+        <div>Jakarta<br/> ' . $tanggalCetak . '</div>
 
         <div style="height:80px;"></div>
 

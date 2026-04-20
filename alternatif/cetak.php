@@ -49,20 +49,14 @@ $mpdf->SetHTMLFooter('
 $sql = "SELECT * FROM alternatif ORDER BY dibuat_pada ASC";
 $result = $conn->query($sql);
 
-$bulan = [
-    1 => 'Januari',
-    'Februari',
-    'Maret',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember'
-];
+$formatter = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'EEEE, dd MMMM yyyy'
+);
 
 $html = '
 <style>
@@ -103,16 +97,16 @@ $html = '
 if ($result->num_rows > 0) {
     $no = 1;
     while ($row = $result->fetch_assoc()) {
-        $tgl = date('d', strtotime($row['periode_rilis']));
-        $bln = $bulan[date('n', strtotime($row['periode_rilis']))];
-        $thn = date('Y', strtotime($row['periode_rilis']));
+
+        $timestamp = strtotime($row['periode_rilis']);
+        $tanggalFormat = $formatter->format($timestamp);
 
         $html .= '
         <tr>
             <td class="center">' . $no++ . '</td>
             <td class="center">' . htmlspecialchars($row['kode_alternatif']) . '</td>
             <td>' . htmlspecialchars($row['judul_film']) . '</td>
-            <td class="center">' . $tgl . ' ' . $bln . ' ' . $thn . '</td>
+            <td class="center">' . $tanggalFormat . '</td>
         </tr>';
     }
     $total = $result->num_rows;
@@ -133,12 +127,12 @@ $html .= '
 </p>
 ';
 
-$tanggalCetak = date('d') . ' ' . $bulan[date('n')] . ' ' . date('Y');
+$tanggalCetak = $formatter->format(time());
 
 $html .= '
 <div style="margin-top:45px; width:100%;">
     <div style="width:40%; float:right; text-align:right; font-size:12px;">
-        <div>Jakarta, ' . $tanggalCetak . '</div>
+        <div>Jakarta<br/> ' . $tanggalCetak . '</div>
 
         <div style="height:80px;"></div>
 
