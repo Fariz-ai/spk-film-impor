@@ -2,6 +2,12 @@
 include_once "../config.php";
 require_once '../vendor/autoload.php';
 
+$filterPeriode = $_GET['periode'] ?? '';
+
+if (!empty($filterPeriode) && !preg_match('/^\d{4}-\d{2}$/', $filterPeriode)) {
+    $filterPeriode = '';
+}
+
 $mpdf = new \Mpdf\Mpdf([
     'mode' => 'utf-8',
     'format' => 'A4',
@@ -12,11 +18,34 @@ $mpdf = new \Mpdf\Mpdf([
     'margin_bottom' => 35
 ]);
 
+$formatterFull = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::FULL,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'EEEE, dd MMMM yyyy'
+);
+
+$formatterBulan = new IntlDateFormatter(
+    'id_ID',
+    IntlDateFormatter::NONE,
+    IntlDateFormatter::NONE,
+    'Asia/Jakarta',
+    IntlDateFormatter::GREGORIAN,
+    'MMMM yyyy'
+);
+
+$judulPeriode = '';
+if (!empty($filterPeriode)) {
+    $ts = strtotime($filterPeriode . '-01');
+    $judulPeriode = ' - ' . $formatterBulan->format($ts);
+}
+
 $logoPath = __DIR__ . '/../assets/images/logo.png';
 
 $header = '
 <div style="padding:5px 10px 0 10px;">
-
     <div style="text-align:center;">
         <img src="' . $logoPath . '" width="120">
     </div>
@@ -26,15 +55,9 @@ $header = '
         Kec. Menteng, Jakarta, Daerah Khusus Ibukota Jakarta 10330
     </div>
 
-    <div style="
-        text-align:center;
-        font-size:14px;
-        font-weight:bold;
-        margin-top:6px;
-    ">
-        LAPORAN DATA ALTERNATIF
+    <div style="text-align:center; font-size:14px; font-weight:bold; margin-top:6px;">
+        LAPORAN DATA ALTERNATIF' . $judulPeriode . '
     </div>
-
 </div>
 ';
 
@@ -46,17 +69,15 @@ $mpdf->SetHTMLFooter('
 </div>
 ');
 
-$sql = "SELECT * FROM alternatif ORDER BY dibuat_pada ASC";
-$result = $conn->query($sql);
+$sql = "SELECT * FROM alternatif";
 
-$formatter = new IntlDateFormatter(
-    'id_ID',
-    IntlDateFormatter::FULL,
-    IntlDateFormatter::NONE,
-    'Asia/Jakarta',
-    IntlDateFormatter::GREGORIAN,
-    'EEEE, dd MMMM yyyy'
-);
+if (!empty($filterPeriode)) {
+    $sql .= " WHERE DATE_FORMAT(periode_rilis, '%Y-%m') = '$filterPeriode'";
+}
+
+$sql .= " ORDER BY dibuat_pada ASC";
+
+$result = $conn->query($sql);
 
 $html = '
 <style>
@@ -77,9 +98,8 @@ $html = '
         border:1px solid #000;
         padding:7px;
         font-size:10px;
-        text-align:center
+        text-align:center;
     }
-    .center { text-align:center; }
 </style>
 
 <table>
@@ -98,22 +118,21 @@ if ($result->num_rows > 0) {
     $no = 1;
     while ($row = $result->fetch_assoc()) {
 
-        $timestamp = strtotime($row['periode_rilis']);
-        $tanggalFormat = $formatter->format($timestamp);
+        $tanggal = $formatterFull->format(strtotime($row['periode_rilis']));
 
         $html .= '
         <tr>
-            <td class="center">' . $no++ . '</td>
-            <td class="center">' . htmlspecialchars($row['kode_alternatif']) . '</td>
+            <td>' . $no++ . '</td>
+            <td>' . htmlspecialchars($row['kode_alternatif']) . '</td>
             <td>' . htmlspecialchars($row['judul_film']) . '</td>
-            <td class="center">' . $tanggalFormat . '</td>
+            <td>' . $tanggal . '</td>
         </tr>';
     }
     $total = $result->num_rows;
 } else {
     $html .= '
         <tr>
-            <td colspan="4" class="center">Tidak ada data</td>
+            <td colspan="4">Tidak ada data</td>
         </tr>';
     $total = 0;
 }
@@ -127,12 +146,12 @@ $html .= '
 </p>
 ';
 
-$tanggalCetak = $formatter->format(time());
+$tanggalCetak = $formatterFull->format(time());
 
 $html .= '
 <div style="margin-top:45px; width:100%;">
     <div style="width:40%; float:right; text-align:right; font-size:12px;">
-        <div>Jakarta<br/> ' . $tanggalCetak . '</div>
+        <div>Jakarta<br/>' . $tanggalCetak . '</div>
 
         <div style="height:80px;"></div>
 
